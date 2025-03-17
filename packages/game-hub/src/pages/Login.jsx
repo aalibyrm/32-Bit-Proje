@@ -1,19 +1,53 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import Box from '@mui/material/Box';
 import { Button, Checkbox, Container, CssBaseline, FormControlLabel, Grid, Link, TextField, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
+import { ThemeContext } from '@emotion/react';
+import ThemeToggleButton from '../components/ThemeToggleButton';
+import axios from 'axios'
 
 function Login() {
+
+    const { mode } = useContext(ThemeContext);
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [rememberMe, setRememberMe] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await axios.post('http://localhost:4000/login', {
+                email,
+                password,
+                rememberMe
+            });
+            console.log('Cevap:', response.data);
+        } catch (error) {
+            console.error('İstek hatası:', error);
+        }
+    }
+
     return (
 
         <Box sx={{
-            backgroundColor: '#D9D9D9',
             minHeight: '100vh',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            py: 4
-        }} >
+            py: 4,
+            position: 'relative'
+        }}>
+
+            <Box sx={{
+                position: 'absolute',
+                right: 16,
+                top: 16,
+                zIndex: 1
+            }}>
+                <ThemeToggleButton />
+            </Box>
             <Container
                 component="main"
                 maxWidth="lg"
@@ -23,7 +57,7 @@ function Login() {
                     justifyContent: 'center',
                 }}
             >
-                <CssBaseline />
+
                 <Grid
                     container
                     sx={{
@@ -34,18 +68,31 @@ function Login() {
                         boxShadow: 8
                     }}
                 >
-                    <Grid
+
+                    {mode === "light" ? (<Grid
                         item
                         xs={false}
                         sm={5}
                         md={6}
                         sx={{
-                            backgroundImage: "url('/assets/redLogo.png')",
+                            backgroundImage: "url('/assets/lightLogo.png')",
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                             display: { xs: 'none', sm: 'block' }
                         }}
-                    />
+                    />) : (<Grid
+                        item
+                        xs={false}
+                        sm={5}
+                        md={6}
+                        sx={{
+                            backgroundImage: "url('/assets/darkLogo.png')",
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            display: { xs: 'none', sm: 'block' }
+                        }}
+                    />)}
+
                     <Grid
                         item
                         xs={12}
@@ -70,28 +117,33 @@ function Login() {
                                 justifyContent: 'center'
                             }}
                         >
-                            <Typography component="h1" variant="h4" gutterBottom>
+                            <Typography component="h1" variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
                                 Giriş
                             </Typography>
                             <Typography variant="body2" gutterBottom>
                                 Hoş geldiniz!
                             </Typography>
 
-                            <Box component="form" sx={{ mt: 3 }}>
+                            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }} >
                                 <TextField
                                     fullWidth
                                     margin="normal"
                                     label="E-posta Adresi"
                                     autoFocus
                                     size="small"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
                                 />
                                 <TextField
                                     fullWidth
                                     margin="normal"
                                     label="Şifre"
                                     type="password"
-                                    autoComplete="current-password"
                                     size="small"
+                                    value={password}
+                                    onChange={(e) => { setPassword(e.target.value) }}
+                                    required
                                 />
 
                                 <Box sx={{
@@ -101,16 +153,19 @@ function Login() {
                                     alignItems: 'center'
                                 }}>
                                     <FormControlLabel
-                                        control={<Checkbox value="remember" />}
+                                        control={<Checkbox checked={rememberMe}
+                                            onChange={(e) => { setRememberMe(e.target.checked) }}
+                                        />}
                                         label="Beni hatırla"
                                     />
-                                    <Link href="#" variant="body2">
+                                    <Link href="#" underline="hover" variant="body2" >
                                         Şifremi Unuttum
                                     </Link>
                                 </Box>
 
                                 <Button
                                     fullWidth
+                                    type='submit'
                                     variant="contained"
                                     sx={{ mt: 4, mb: 2 }}
                                 >
