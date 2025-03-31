@@ -18,7 +18,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/home" element={<Home />} />
                 <Route path="/game-detail" element={<GameDetail />} />
-                <Route path="/game-detail" element={<GameDetail />} />
+                <Route path="/game" element={<GameDetail />} />
                 <Route path="*" element={<NotFoundPage />} />
 
             </Routes>

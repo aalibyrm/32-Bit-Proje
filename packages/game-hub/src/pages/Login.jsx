@@ -5,6 +5,7 @@ import Paper from '@mui/material/Paper';
 import { ThemeContext } from '@emotion/react';
 import ThemeToggleButton from '../components/ThemeToggleButton';
 import axios from 'axios'
+import { Navigate, useNavigate } from 'react-router-dom';
 
 function Login() {
 
@@ -13,6 +14,8 @@ function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,7 +26,14 @@ function Login() {
                 password,
                 rememberMe
             });
-            console.log('Cevap:', response.data);
+
+            if (response) {
+                navigate('/home');
+            } else {
+                alert('Giriş başarısız');
+            }
+
+
         } catch (error) {
             console.error('İstek hatası:', error);
         }
