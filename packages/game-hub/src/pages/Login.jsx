@@ -4,39 +4,20 @@ import { Button, Checkbox, Container, CssBaseline, FormControlLabel, Grid, Link,
 import Paper from '@mui/material/Paper';
 import { ThemeContext } from '@emotion/react';
 import ThemeToggleButton from '../components/ThemeToggleButton';
-import axios from 'axios'
-import { Navigate, useNavigate } from 'react-router-dom';
+import AuthContext from '../auth/AuthContext';
 
 function Login() {
 
     const { mode } = useContext(ThemeContext);
+    const { login } = useContext(AuthContext);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
 
-    const navigate = useNavigate();
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        try {
-            const response = await axios.post('http://localhost:4000/login', {
-                email,
-                password,
-                rememberMe
-            });
-
-            if (response) {
-                navigate('/home');
-            } else {
-                alert('Giriş başarısız');
-            }
-
-
-        } catch (error) {
-            console.error('İstek hatası:', error);
-        }
+        await login(email, password);
     }
 
     return (
