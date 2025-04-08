@@ -7,7 +7,7 @@ const AuthContext = createContext();
 
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(undefined);
     const navigate = useNavigate();
 
     const login = async (email, password) => {

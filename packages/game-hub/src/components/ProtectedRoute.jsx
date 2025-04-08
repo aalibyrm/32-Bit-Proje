@@ -6,7 +6,7 @@ import LoadingScreen from "./LoadingScreen";
 const ProtectedRoute = () => {
     const { user } = useContext(AuthContext);
 
-    if (user === null) {
+    if (user === undefined) {
         return <LoadingScreen />
     }
 
