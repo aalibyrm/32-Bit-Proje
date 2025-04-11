@@ -9,29 +9,41 @@ import { CssBaseline } from '@mui/material';
 import { AuthProvider } from './auth/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LogoutHandler from './components/LogoutHandler';
+import FastLoginHandler from './components/FastLoginHandler';
+import LoginRoute from './components/LoginRoute';
+import { AlertProvider } from './alert/AlertContext';
+import AlertManager from './components/AlertManager';
 
 function App() {
     return (
-        <AuthProvider>
-            <ThemeContextProvider>
+        <AlertProvider>
+            <AuthProvider>
+                <ThemeContextProvider>
 
-                <CssBaseline />
-                <Routes>
+                    <CssBaseline />
+                    <AlertManager />
+                    <Routes>
 
-                    <Route path="/login" element={<Login />} />
+                        <Route element={<LoginRoute />}>
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/fast-login" element={<FastLoginHandler />} />
+                        </Route>
 
-                    <Route element={<ProtectedRoute />}>
-                        <Route path="/home" element={<Home />} />
-                        <Route path="/game-detail" element={<GameDetail />} />
-                        <Route path="/game" element={<GameDetail />} />
-                        <Route path="/logout" element={<LogoutHandler />} />
-                    </Route>
 
-                    <Route path="*" element={<NotFoundPage />} />
 
-                </Routes>
-            </ThemeContextProvider>
-        </AuthProvider>
+                        <Route element={<ProtectedRoute />}>
+                            <Route path="/home" element={<Home />} />
+                            <Route path="/game-detail" element={<GameDetail />} />
+                            <Route path="/game" element={<GameDetail />} />
+                            <Route path="/logout" element={<LogoutHandler />} />
+                        </Route>
+
+                        <Route path="*" element={<NotFoundPage />} />
+
+                    </Routes>
+                </ThemeContextProvider>
+            </AuthProvider >
+        </AlertProvider>
     )
 }
 

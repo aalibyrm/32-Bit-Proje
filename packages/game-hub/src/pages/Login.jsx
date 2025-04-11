@@ -1,24 +1,36 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Box from '@mui/material/Box';
-import { Button, Checkbox, Container, CssBaseline, FormControlLabel, Grid, Link, TextField, Typography } from '@mui/material';
+import { Avatar, Button, Checkbox, Container, Divider, FormControlLabel, Grid, Link, TextField, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { ThemeContext } from '@emotion/react';
 import ThemeToggleButton from '../components/ThemeToggleButton';
 import AuthContext from '../auth/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
 
     const { mode } = useContext(ThemeContext);
-    const { login } = useContext(AuthContext);
+    const { login, rememberToken, rememberUser } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
+    const [forgotPassword, setForgotPassword] = useState(true);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await login(email, password);
+        await login(email, password, rememberMe);
     }
+
+    const handleClick = () => {
+        navigate("/fast-login", { replace: true });
+    }
+
+    useEffect(() => {
+        rememberToken();
+    }, []);
+
 
     return (
 
@@ -101,7 +113,7 @@ function Login() {
                         <Box
                             sx={{
                                 px: { xs: 4, sm: 6, md: 8 },
-                                py: 6,
+                                py: 4,
                                 height: '100%',
                                 display: 'flex',
                                 flexDirection: 'column',
@@ -111,64 +123,148 @@ function Login() {
                             <Typography component="h1" variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
                                 Giriş
                             </Typography>
-                            <Typography variant="body2" gutterBottom>
-                                Hoş geldiniz!
-                            </Typography>
 
-                            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }} >
-                                <TextField
-                                    fullWidth
-                                    margin="normal"
-                                    label="E-posta Adresi"
-                                    autoFocus
-                                    size="small"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                />
-                                <TextField
-                                    fullWidth
-                                    margin="normal"
-                                    label="Şifre"
-                                    type="password"
-                                    size="small"
-                                    value={password}
-                                    onChange={(e) => { setPassword(e.target.value) }}
-                                    required
-                                />
+                            {
+                                rememberUser ?
+                                    <Box>
 
-                                <Box sx={{
-                                    mt: 2,
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center'
-                                }}>
-                                    <FormControlLabel
-                                        control={<Checkbox checked={rememberMe}
-                                            onChange={(e) => { setRememberMe(e.target.checked) }}
-                                        />}
-                                        label="Beni hatırla"
-                                    />
-                                    <Link href="#" underline="hover" variant="body2" >
-                                        Şifremi Unuttum
-                                    </Link>
-                                </Box>
+                                        <Box
+                                            onClick={handleClick}
+                                            sx={{
+                                                p: 2,
+                                                borderRadius: 10,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: 2,
+                                                cursor: 'pointer',
+                                                transition: 'background-color 0.3s ease',
+                                                '&:hover': {
+                                                    backgroundColor: mode === 'dark' ? '#0d0d0d' : '#e0e0e0',
+                                                },
+                                            }}
+                                        >
+                                            <Avatar sx={{ width: 48, height: 48 }} src="/broken-image.jpg" />
+                                            <Box>
+                                                <Typography variant="body2" >
+                                                    {rememberUser}
+                                                </Typography>
+                                                <Typography variant="caption">
+                                                    Bu hesapla devam edin
+                                                </Typography>
+                                            </Box>
+                                        </Box>
 
-                                <Button
-                                    fullWidth
-                                    type='submit'
-                                    variant="contained"
-                                    sx={{ mt: 4, mb: 2 }}
-                                >
-                                    Giriş Yap
-                                </Button>
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                mt: 2.5,
+
+                                            }}
+                                        >
+                                            <Divider sx={{ flex: 1 }} />
+                                            <Typography sx={{ px: 1, fontSize: '0.8rem', }}>veya</Typography>
+                                            <Divider sx={{ flex: 1 }} />
+                                        </Box>
+
+                                    </Box>
+                                    :
+                                    <Typography variant="body2" gutterBottom>
+                                        Hoş geldiniz!
+                                    </Typography>
+                            }
+
+
+                            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                                {forgotPassword ? (
+                                    <>
+                                        <TextField
+                                            fullWidth
+                                            margin="normal"
+                                            label="E-posta Adresi"
+                                            autoFocus
+                                            size="small"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            required
+                                        />
+                                        <TextField
+                                            fullWidth
+                                            margin="normal"
+                                            label="Şifre"
+                                            type="password"
+                                            size="small"
+                                            value={password}
+                                            onChange={(e) => { setPassword(e.target.value) }}
+                                            required
+                                        />
+
+                                        <Box sx={{
+                                            mt: 2,
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center'
+                                        }}>
+                                            <FormControlLabel
+                                                control={<Checkbox checked={rememberMe}
+                                                    onChange={(e) => { setRememberMe(e.target.checked) }}
+                                                />}
+                                                label="Beni hatırla"
+                                            />
+                                            <Link underline="hover" variant="body2" onClick={() => setForgotPassword(false)} >
+                                                Şifremi Unuttum
+                                            </Link>
+                                        </Box>
+
+                                        <Button
+                                            fullWidth
+                                            type='submit'
+                                            variant="contained"
+                                            sx={{ mt: 4, mb: 2 }}
+                                        >
+                                            Giriş Yap
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <TextField
+                                            fullWidth
+                                            margin="normal"
+                                            label="E-posta Adresi"
+                                            autoFocus
+                                            size="small"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            required
+                                        />
+                                        <Box sx={{
+                                            mt: 2,
+                                            display: 'flex',
+                                            justifyContent: 'end',
+                                            alignItems: 'center'
+                                        }}>
+
+                                            <Link onClick={() => setForgotPassword(true)} underline="hover" variant="body2" >
+                                                Giriş Yap
+                                            </Link>
+                                        </Box>
+                                        <Button
+                                            fullWidth
+                                            type='submit'
+                                            variant="contained"
+                                            sx={{ mt: 4, mb: 2 }}
+                                        >
+                                            Sıfırla
+                                        </Button>
+                                    </>
+                                )}
                             </Box>
                         </Box>
                     </Grid>
                 </Grid>
             </Container>
 
-        </Box>
+        </Box >
     )
 }
 

@@ -10,7 +10,7 @@ const LogoutHandler = () => {
     useEffect(() => {
         const performLogout = async () => {
             await logout();
-            navigate('/login');
+            navigate('/login', { replace: true });
         };
 
         performLogout();
