@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 const themeColors = (mode) => createTheme({
     palette: {
         mode,
-        primary: { main: mode === "dark" ? "#9e23de" : "#A32829" },
+        primary: { main: mode === "dark" ? "#9e23de" : "#8d1718" },
         secondary: { main: mode === "dark" ? "#2F2F2F" : "#D9D9D9" },
     },
     typography: {

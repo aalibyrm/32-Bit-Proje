@@ -67,11 +67,6 @@ function ThemeToggleButton() {
 
     return (
         <>
-            {/*  <MaterialUISwitch sx={{ m: 1 }}
-                checked={mode === "light"}
-                onChange={toggleTheme}
-            /> */}
-
             <Switch checked={mode === "dark"}
                 onChange={toggleTheme}
             />
