@@ -23,8 +23,8 @@ export default function TogglePanel() {
                 textColor="primary"
                 indicatorColor="primary"
             >
-                <Tab label="Chat" />
-                <Tab label="Lobbies" />
+                <Tab label="Sohbet" />
+                <Tab label="Lobi" />
             </Tabs>
             <Divider />
             <Box sx={{ flexGrow: 1, overflow: 'auto' }}>

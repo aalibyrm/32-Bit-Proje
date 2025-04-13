@@ -17,12 +17,6 @@ const messages = [
         time: '12:34',
     },
     {
-        name: 'Darlene Robertson',
-        msg: 'A casino is a facility for certain types of gambling 🎰',
-        avatar: 'https://i.pravatar.cc/40?img=2',
-        time: '12:35',
-    },
-    {
         name: 'Annette Black',
         msg: 'My favorite color is blue because it reminds me of the ocean 🌊',
         avatar: 'https://i.pravatar.cc/40?img=3',
