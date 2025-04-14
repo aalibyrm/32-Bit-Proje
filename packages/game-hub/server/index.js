@@ -8,8 +8,18 @@ import users from './users.js'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import passLogin from './PassLogin.js';
+import { Server } from 'socket.io';
+import http from 'http';
 
 const app = express();
+const server = http.createServer(app);
+
+const io = new Server(server, {
+    cors: {
+        origin: 'http://localhost:5173',
+        methods: ['GET', 'POST']
+    }
+});
 
 dotenv.config();
 app.use(cookieParser());
@@ -151,6 +161,75 @@ app.post('/logout', (req, res) => {
     })
 })
 
-app.listen(4000, () => {
+
+let lobbies = [];
+
+io.on('connection', (socket) => {
+    console.log('🟢 Client connected:', socket.id);
+
+    socket.on('get-user-id', () => {
+        console.log('📦 get-user-id received, sending back:', socket.id);
+        socket.emit('user-id', socket.id);
+    });
+
+
+    socket.emit('lobbies', lobbies);
+
+
+    socket.on('create-lobby', (data) => {
+        const { name, type, password, game } = data;
+
+        const newLobby = {
+            id: generateLobbyId(),
+            name,
+            type,
+            password,
+            game,
+            players: [],
+        };
+
+        lobbies.push(newLobby);
+        io.emit('lobbies', lobbies);
+    });
+
+
+    socket.on('join-lobby', ({ lobbyId, password }) => {
+        const lobby = lobbies.find(l => l.id === lobbyId);
+
+        if (!lobby) return;
+
+        const check = lobbies.find(l => l.players.includes(socket.id));
+
+        if (!check) {
+            if (lobby.password && lobby.password !== password) {
+                socket.emit('join-error', 'Şifre yanlış!');
+                return;
+            }
+
+            if (!lobby.players.includes(socket.id)) {
+                lobby.players.push(socket.id);
+            }
+            io.emit('lobbies', lobbies);
+            socket.emit('join-success', lobby);
+        }
+
+    });
+
+    socket.on('leave-lobby', (lobbyId) => {
+        const lobby = lobbies.find(l => l.id === lobbyId);
+        if (lobby) {
+            lobby.players = lobby.players.filter(id => id !== socket.id);
+            io.emit('lobbies', lobbies);
+        }
+    });
+});
+
+
+
+function generateLobbyId() {
+    return Math.random().toString(36).substr(2, 6);
+}
+
+server.listen(4000, () => {
     console.log('Server 4000 portunda çalışıyor.');
 });
