@@ -1,5 +1,6 @@
 import { Box, Typography, List, ListItem, ListItemIcon, ListItemText, Modal, Button, TextField, InputLabel, Select, MenuItem, FormControl } from '@mui/material';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useContext, useEffect, useState } from 'react';
 import socket from '../../socket/socket';
 import { AlertContext } from '../../alert/AlertContext';
@@ -20,12 +21,12 @@ export default function LobbyPanel() {
     const [selectedLobbyId, setSelectedLobbyId] = useState(null);
     const [error, setError] = useState('');
     const [userId, setUserId] = useState(null);
-    const [joined, setJoined] = useState(false);
+    /*  const [isLeader, setIsLeader] = useState(false); */
+
 
 
     useEffect(() => {
         socket.emit('get-user-id');
-
         socket.on('user-id', (id) => {
             setUserId(id);
         });
@@ -59,12 +60,14 @@ export default function LobbyPanel() {
 
     const handleOpen = () => setModalOpen(true);
     const handleClose = () => setModalOpen(false);
+
     const isInLobby = lobbies.some(lobby => lobby.players.includes(userId));
+    const isLeader = lobbies.some(l => l.leader === userId);
 
 
     const createLobby = () => {
         if (!newLobby.name.trim()) return;
-        socket.emit('create-lobby', newLobby);
+        socket.emit('create-lobby', { data: newLobby });
         handleClose();
     }
 
@@ -83,6 +86,11 @@ export default function LobbyPanel() {
         socket.emit('leave-lobby', id)
         showAlert('Lobiden ayrıldınız', 'success');
         setSelectedLobbyId(null)
+    }
+
+    const deleteLobby = (id) => {
+        socket.emit('delete-lobby', id)
+        showAlert('Lobi silindi', 'success');
 
     }
 
@@ -96,10 +104,13 @@ export default function LobbyPanel() {
             msOverflowStyle: 'none'
         }}>
 
+            {
+                !isLeader &&
+                <Button variant="contained" color="primary" onClick={handleOpen}>
+                    ➕ Lobi Oluştur
+                </Button>
+            }
 
-            <Button variant="contained" color="primary" onClick={handleOpen}>
-                ➕ Lobi Oluştur
-            </Button>
 
             <Modal open={modalOpen} onClose={handleClose}>
                 <Box >
@@ -171,31 +182,41 @@ export default function LobbyPanel() {
                         <Box key={lobby.id} sx={{ borderBottom: '1px solid #ccc', py: 1 }}>
                             <Typography>
                                 <strong>{lobby.name}</strong> | 🎮 {lobby.game} | 🧭 {lobby.type}
-                                {lobby.password && <span> | 🔐 Şifreli</span>}
                             </Typography>
                             <Typography variant="body2">
                                 Oyuncular: {lobby.players.length}
                             </Typography>
 
-                            {lobby.players.includes(userId) ? (
-                                <Button
-                                    variant="outlined"
-                                    color="primary"
-                                    onClick={() => leaveLobby(lobby.id)}
-                                    sx={{ mt: 1 }}
-                                >
-                                    Ayrıl
-                                </Button>
-                            ) : (
-                                <Button onClick={() => requestJoin(lobby)}
-                                    variant="outlined"
-                                    color="primary"
-                                    sx={{ mt: 1 }}>
-                                    Katıl
-                                </Button>
-                            )}
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                {lobby.players.includes(userId) ? (
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        onClick={() => leaveLobby(lobby.id)}
+                                        sx={{ mt: 1 }}
+                                    >
+                                        Ayrıl
+                                    </Button>
+                                ) : (
+                                    <Button onClick={() => requestJoin(lobby)}
+                                        variant="outlined"
+                                        color="primary"
+                                        sx={{ mt: 1 }}>
+                                        Katıl
+                                    </Button>
+                                )}
 
-
+                                {lobby.leader === userId && (
+                                    <Button
+                                        variant="text"
+                                        color="error"
+                                        onClick={() => deleteLobby(lobby.id)}
+                                        sx={{ mt: 1 }}
+                                    >
+                                        <DeleteIcon />
+                                    </Button>
+                                )}
+                            </Box>
                         </Box>
                     ))
                 )}

@@ -161,8 +161,29 @@ app.post('/logout', (req, res) => {
     })
 })
 
-
+/* 
 let lobbies = [];
+ */
+let lobbies = [
+    {
+        id: "lobby1",
+        name: "Valorant Competitive",
+        type: "public",
+        password: "",
+        game: "Valorant",
+        leader: "player1",
+        players: ["player1", "player2", "player3"]
+    },
+    {
+        id: "lobby2",
+        name: "Minecraft Builders",
+        type: "private",
+        password: "build123",
+        game: "Minecraft",
+        leader: "player4",
+        players: ["player4", "player5"]
+    }
+];
 
 io.on('connection', (socket) => {
     console.log('🟢 Client connected:', socket.id);
@@ -176,19 +197,23 @@ io.on('connection', (socket) => {
     socket.emit('lobbies', lobbies);
 
 
-    socket.on('create-lobby', (data) => {
+    socket.on('create-lobby', ({ data }) => {
         const { name, type, password, game } = data;
+        const lobbyId = generateLobbyId();
+        const leaderId = socket.id;
 
         const newLobby = {
-            id: generateLobbyId(),
+            id: lobbyId,
             name,
             type,
             password,
             game,
-            players: [],
+            leader: leaderId,
+            players: [leaderId],
         };
 
         lobbies.push(newLobby);
+        socket.join(lobbyId);
         io.emit('lobbies', lobbies);
     });
 
@@ -222,6 +247,11 @@ io.on('connection', (socket) => {
             io.emit('lobbies', lobbies);
         }
     });
+
+    socket.on('delete-lobby', (lobbyId) => {
+        lobbies = lobbies.filter(l => l.id !== lobbyId);
+        io.emit('lobbies', lobbies);
+    })
 });
 
 
