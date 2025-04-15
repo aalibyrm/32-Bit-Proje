@@ -6,6 +6,8 @@
   ],
   "dependencies": {
     "@mui/icons-material": "^6.4.6",
+    "@mui/x-date-pickers": "^7.28.3",
+    "dayjs": "^1.11.13",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1"
   },

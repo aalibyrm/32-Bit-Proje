@@ -1,9 +1,14 @@
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import dayjs from 'dayjs';
 import { Box, Typography, List, ListItem, ListItemIcon, ListItemText, Modal, Button, TextField, InputLabel, Select, MenuItem, FormControl } from '@mui/material';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useContext, useEffect, useState } from 'react';
 import socket from '../../socket/socket';
 import { AlertContext } from '../../alert/AlertContext';
+import Countdown from './Countdown';
 
 export default function LobbyPanel() {
 
@@ -14,7 +19,9 @@ export default function LobbyPanel() {
         name: '',
         password: '',
         type: 'normal',
-        game: ''
+        game: '',
+        eventStartDateTime: null,
+        eventEndDateTime: null
     })
 
     const [joinPassword, setJoinPassword] = useState('');
@@ -142,9 +149,62 @@ export default function LobbyPanel() {
                             onChange={(e) => setNewLobby({ ...newLobby, type: e.target.value })}
                         >
                             <MenuItem value="normal">Normal</MenuItem>
-                            <MenuItem value="etkinlik">Etkinlik</MenuItem>
+                            <MenuItem value="etkinlik" >Etkinlik</MenuItem>
                         </Select>
                     </FormControl>
+
+                    {
+                        newLobby.type === "etkinlik" && (
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DateTimePicker
+                                    label="Etkinlik Tarih ve Saati"
+                                    ampm={false}
+                                    value={newLobby.eventStartDateTime ? dayjs(newLobby.eventStartDateTime) : null}
+                                    onChange={(newValue) => {
+                                        setNewLobby({
+                                            ...newLobby,
+                                            eventStartDateTime: newValue ? newValue.toISOString() : null,
+                                            // Başlangıç tarihi değiştiğinde, bitiş tarihi başlangıçtan önceyse sıfırlar
+                                            eventEndDateTime: newValue && newLobby.eventEndDateTime && dayjs(newLobby.eventEndDateTime).isBefore(newValue)
+                                                ? null
+                                                : newLobby.eventEndDateTime
+                                        });
+                                    }}
+                                    minDateTime={dayjs()}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            fullWidth
+                                            margin="normal"
+                                        />
+                                    )}
+                                />
+
+                                <DateTimePicker
+                                    label="Bitiş Tarih ve Saati"
+                                    ampm={false}
+                                    value={newLobby.eventEndDateTime ? dayjs(newLobby.eventEndDateTime) : null}
+                                    onChange={(newValue) => {
+                                        setNewLobby({
+                                            ...newLobby,
+                                            eventEndDateTime: newValue ? newValue.toISOString() : null
+                                        });
+                                    }}
+                                    minDateTime={
+                                        newLobby.eventStartDateTime
+                                            ? dayjs(newLobby.eventStartDateTime) // Başlangıç tarihinden öncesini engeller
+                                            : dayjs() // Eğer başlangıç tarihi yoksa şu anın öncesini engeller
+                                    }
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            fullWidth
+                                            margin="normal"
+                                        />
+                                    )}
+                                />
+                            </LocalizationProvider>
+                        )}
 
                     <FormControl fullWidth margin="normal">
                         <InputLabel id="game-label">Oyun</InputLabel>
@@ -186,6 +246,11 @@ export default function LobbyPanel() {
                             <Typography variant="body2">
                                 Oyuncular: {lobby.players.length}
                             </Typography>
+                            {
+                                lobby.startTime &&
+                                <Countdown date={lobby.startTime} />
+                            }
+
 
                             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                 {lobby.players.includes(userId) ? (
