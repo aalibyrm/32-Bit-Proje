@@ -168,7 +168,7 @@ let lobbies = [
     {
         id: "lobby1",
         name: "Valorant Competitive",
-        type: "public",
+        type: "normal",
         password: "",
         game: "Valorant",
         leader: "player1",
@@ -177,13 +177,27 @@ let lobbies = [
     {
         id: "lobby2",
         name: "Minecraft Builders",
-        type: "private",
+        type: "normal",
         password: "build123",
         game: "Minecraft",
         leader: "player4",
         players: ["player4", "player5"]
     }
 ];
+
+const checkExpiredLobbies = () => {
+    const now = new Date();
+    lobbies = lobbies.filter(lobby => {
+        if (lobby.type === "etkinlik" && lobby.endTime) {
+            return new Date(lobby.endTime) > now;
+        }
+        return true;
+    });
+    io.emit('lobbies', lobbies);
+};
+
+setInterval(checkExpiredLobbies, 60000);
+
 
 io.on('connection', (socket) => {
     console.log('🟢 Client connected:', socket.id);
@@ -193,30 +207,12 @@ io.on('connection', (socket) => {
         socket.emit('user-id', socket.id);
     });
 
-
     socket.emit('lobbies', lobbies);
-
 
     socket.on('create-lobby', ({ data }) => {
         const { name, type, password, game, eventStartDateTime, eventEndDateTime } = data;
         const lobbyId = generateLobbyId();
         const leaderId = socket.id;
-
-        if (type === "normal") {
-            const newLobby = {
-                id: lobbyId,
-                name,
-                type,
-                password,
-                game,
-                leader: leaderId,
-                players: [leaderId],
-            };
-
-            lobbies.push(newLobby);
-            socket.join(lobbyId);
-            io.emit('lobbies', lobbies);
-        }
 
         const newLobby = {
             id: lobbyId,
@@ -226,7 +222,8 @@ io.on('connection', (socket) => {
             game,
             leader: leaderId,
             players: [leaderId],
-            startTime: eventStartDateTime
+            startTime: eventStartDateTime,
+            endTime: eventEndDateTime
         };
 
         lobbies.push(newLobby);
@@ -273,31 +270,6 @@ io.on('connection', (socket) => {
     })
 });
 
-/* function remainingTime(time) {
-    const time2 = new Date();
-    const time1 = new Date(time);
-
-    const farkMs = Math.abs(time1 - time2);
-    const birGunMs = 24 * 60 * 60 * 1000;
-    const birSaatMs = 60 * 60 * 1000;
-    const birDakikaMs = 60 * 1000;
-
-    if (farkMs >= birGunMs) {
-        const gunSayisi = Math.floor(farkMs / birGunMs);
-        return `${gunSayisi} gün kaldı`;
-    } else {
-        const saat = Math.floor(farkMs / birSaatMs);
-        const kalanMs = farkMs % birSaatMs;
-        const dakika = Math.floor(kalanMs / birDakikaMs);
-
-        if (saat > 0) {
-            return `${saat} saat ${dakika} dakika kaldı`;
-        } else (dakika > 0)
-        return `${dakika} dakika kaldı`;
-
-    }
-}
- */
 function generateLobbyId() {
     return Math.random().toString(36).substr(2, 6);
 }

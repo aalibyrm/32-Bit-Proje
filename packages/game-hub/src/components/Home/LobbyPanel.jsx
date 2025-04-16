@@ -28,16 +28,33 @@ export default function LobbyPanel() {
     const [selectedLobbyId, setSelectedLobbyId] = useState(null);
     const [error, setError] = useState('');
     const [userId, setUserId] = useState(null);
-    /*  const [isLeader, setIsLeader] = useState(false); */
+    const [selectedLobby, setSelectedLobby] = useState(null);
+    const [lobbyModalOpen, setLobbyModalOpen] = useState(false);
+    const [joinModalOpen, setJoinModalOpen] = useState(false);
+    const [inputId, setInputId] = useState('');
 
+    const handleLobbyClick = (lobby) => {
+        setSelectedLobby(lobby);
+        setLobbyModalOpen(true);
+    };
 
+    const handleCloseLobbyModal = () => {
+        setLobbyModalOpen(false);
+    };
+
+    const handleOpenJoinModal = () => {
+        setJoinModalOpen(true);
+    };
+
+    const handleCloseJoinModal = () => {
+        setJoinModalOpen(false);
+    };
 
     useEffect(() => {
         socket.emit('get-user-id');
         socket.on('user-id', (id) => {
             setUserId(id);
         });
-
 
         socket.on('lobbies', (lobbies) => {
             setLobbies(lobbies);
@@ -101,6 +118,25 @@ export default function LobbyPanel() {
 
     }
 
+    const sortedLobbies = [...lobbies].sort((a, b) => {
+        if (a.type === "etkinlik" && b.type !== "etkinlik") return -1;
+        if (a.type !== "etkinlik" && b.type === "etkinlik") return 1;
+        return 0;
+    });
+
+    const checkLobbyId = (inputId) => {
+        if (!inputId.trim()) {
+            showAlert('Hatalı ID', 'error');
+            return;
+        }
+        const isLobbyValid = lobbies.some(lobby => lobby.id === inputId);
+
+        if (isLobbyValid) {
+            setSelectedLobbyId(inputId);
+        } else {
+            showAlert('Hatalı ID', 'error');
+        }
+    };
     return (
         <Box p={2} sx={{
             overflowY: 'auto', height: '100%', overflowY: 'scroll',
@@ -110,14 +146,49 @@ export default function LobbyPanel() {
             scrollbarWidth: 'none',
             msOverflowStyle: 'none'
         }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                {
+                    !isLeader &&
+                    <Button variant="contained" color="primary" onClick={handleOpen} >
+                        Lobi Oluştur
+                    </Button>
+                }
 
-            {
-                !isLeader &&
-                <Button variant="contained" color="primary" onClick={handleOpen}>
-                    ➕ Lobi Oluştur
-                </Button>
-            }
+                {
+                    !isInLobby &&
+                    <Button variant='contained' color='primary' onClick={() => setJoinModalOpen(true)}>
+                        Lobiye katıl
+                    </Button>
+                }
+            </Box>
 
+            <Modal open={joinModalOpen} onClose={handleCloseJoinModal}>
+                <Box sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 400,
+                    bgcolor: 'background.paper',
+                    boxShadow: 24,
+                    p: 4,
+                    borderRadius: 2
+                }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+
+
+                        <TextField label="Lobi ID" value={inputId} onChange={(e) => setInputId(e.target.value)}></TextField>
+                        <Button
+                            variant='contained'
+                            onClick={() => {
+                                checkLobbyId(inputId);
+                                handleCloseJoinModal();
+                                setInputId('');
+                            }}
+                        >Katıl</Button>
+                    </Box>
+                </Box>
+            </Modal>
 
             <Modal open={modalOpen} onClose={handleClose}>
                 <Box >
@@ -238,9 +309,9 @@ export default function LobbyPanel() {
                 {lobbies.length === 0 ? (
                     <Typography>Hiç lobi yok.</Typography>
                 ) : (
-                    lobbies.map((lobby) => (
-                        <Box key={lobby.id} sx={{ borderBottom: '1px solid #ccc', py: 1 }}>
-                            <Typography>
+                    sortedLobbies.map((lobby) => (
+                        <Box key={lobby.id} sx={{ borderBottom: '1px solid #ccc', py: 1, cursor: 'pointer', }}>
+                            <Typography onClick={() => handleLobbyClick(lobby)}>
                                 <strong>{lobby.name}</strong> | 🎮 {lobby.game} | 🧭 {lobby.type}
                             </Typography>
                             <Typography variant="body2">
@@ -287,27 +358,91 @@ export default function LobbyPanel() {
                 )}
             </Box>
 
+            <Modal open={lobbyModalOpen} onClose={handleCloseLobbyModal}>
+                <Box sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 400,
+                    bgcolor: 'background.paper',
+                    boxShadow: 24,
+                    p: 4,
+                    borderRadius: 2
+                }}>
+                    <Typography variant="h6" gutterBottom>
+                        Lobi Detayları
+                    </Typography>
+                    {selectedLobby && (
+                        <>
+                            <Typography>Lobi ID: {selectedLobby.id}</Typography>
+                            <Typography>Lobi Adı: {selectedLobby.name}</Typography>
+                            <Typography>Oyun: {selectedLobby.game}</Typography>
+                            <Typography>Tür: {selectedLobby.type}</Typography>
+                            <Typography>Oyuncu Sayısı: {selectedLobby.players.length}</Typography>
+                        </>
+                    )}
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Button variant='contained'
+                            onClick={() => {
+                                navigator.clipboard.writeText(selectedLobby.id);
+                                showAlert('Kod kopyalandı!', 'success');
+                            }}>
+                            Kodu Kopyala
+                        </Button>
+                        <Button
+                            variant="contained"
+                            onClick={handleCloseLobbyModal}
+                            sx={{ mt: 2 }}
+                        >
+                            Kapat
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal>
+
             {
                 !isInLobby && selectedLobbyId && (
-                    <Box mt={3} sx={{ border: '1px dashed red', p: 2 }}>
-                        <Typography>🔐 Şifre Gerekli</Typography>
-                        <TextField
-                            label="Lobi Şifresi"
-                            type="password"
-                            value={joinPassword}
-                            onChange={(e) => setJoinPassword(e.target.value)}
-                        />
-                        <Button variant="contained" onClick={submitJoin} sx={{ ml: 2 }}>
-                            Katıl
-                        </Button>
-                        {error && (
-                            <Typography color="error" mt={1}>
-                                {error}
-                            </Typography>
-                        )}
-                    </Box>
-                )
+                    <Modal open={!!selectedLobbyId} onClose={() => setSelectedLobbyId(null)}>
+                        <Box sx={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            width: 400,
+                            bgcolor: 'background.paper',
+                            boxShadow: 24,
+                            p: 4,
+                            borderRadius: 2
+                        }}>
+                            <Typography variant="h6" gutterBottom>🔐 Şifre Gerekli</Typography>
 
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                label="Lobi Şifresi"
+                                type="password"
+                                value={joinPassword}
+                                onChange={(e) => setJoinPassword(e.target.value)}
+                            />
+
+                            {error && (
+                                <Typography color="error" mt={1}>
+                                    {error}
+                                </Typography>
+                            )}
+
+                            <Box mt={2} display="flex" justifyContent="flex-end">
+                                <Button
+                                    variant="contained"
+                                    onClick={submitJoin}
+                                >
+                                    Katıl
+                                </Button>
+                            </Box>
+                        </Box>
+                    </Modal>
+                )
             }
 
 
