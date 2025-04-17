@@ -1,4 +1,3 @@
-// src/components/Sidebar.jsx
 import {
     Box,
     List,
@@ -9,57 +8,60 @@ import {
     Select,
     MenuItem,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+
 import CasinoIcon from '@mui/icons-material/Casino';
 import StarIcon from '@mui/icons-material/Star';
 import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
 import GroupsIcon from '@mui/icons-material/Groups';
 
-
 export default function Sidebar() {
+    const theme = useTheme();
+
     return (
         <Box
             sx={{
                 height: '100%',
-                bgcolor: 'background.paper',
-                borderRight: '1px solid #2a2d34',
+                bgcolor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                borderRight: `1px solid ${theme.palette.divider}`,
                 display: 'flex',
                 flexDirection: 'column',
                 padding: 1,
             }}
         >
-            {/* 🎰 Slots Section */}
+            {/* 🎰 Oyunlar */}
             <List dense>
                 <ListItemButton>
-                    <ListItemIcon>
+                    <ListItemIcon sx={{ color: theme.palette.text.primary }}>
                         <CasinoIcon />
                     </ListItemIcon>
                     <ListItemText primary="Tüm Oyunlar" />
                 </ListItemButton>
 
                 <ListItemButton>
-                    <ListItemIcon>
+                    <ListItemIcon sx={{ color: theme.palette.text.primary }}>
                         <StarIcon />
                     </ListItemIcon>
                     <ListItemText primary="Favorileriniz" />
                 </ListItemButton>
 
                 <ListItemButton>
-                    <ListItemIcon>
+                    <ListItemIcon sx={{ color: theme.palette.text.primary }}>
                         <TableRestaurantIcon />
                     </ListItemIcon>
                     <ListItemText primary="Masa Oyunları" />
                 </ListItemButton>
 
                 <ListItemButton>
-                    <ListItemIcon>
+                    <ListItemIcon sx={{ color: theme.palette.text.primary }}>
                         <GroupsIcon />
                     </ListItemIcon>
                     <ListItemText primary="Etkinlik Oyunları" />
                 </ListItemButton>
             </List>
 
-
-
+            {/* 🌍 Dil Seçimi */}
             <Box mt="auto">
                 <Typography variant="h6" sx={{ mb: 1 }}>
                     Dil
@@ -69,8 +71,8 @@ export default function Sidebar() {
                     fullWidth
                     defaultValue="tr"
                     sx={{
-                        color: 'text.primary',
-
+                        color: theme.palette.text.primary,
+                        bgcolor: theme.palette.background.default,
                         mb: 2,
                     }}
                 >
@@ -78,8 +80,6 @@ export default function Sidebar() {
                     <MenuItem value="en">🇺🇸 English</MenuItem>
                 </Select>
             </Box>
-
-
         </Box>
     );
 }

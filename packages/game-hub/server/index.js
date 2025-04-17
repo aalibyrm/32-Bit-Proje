@@ -166,22 +166,26 @@ let lobbies = [];
  */
 let lobbies = [
     {
-        id: "lobby1",
-        name: "Valorant Competitive",
-        type: "normal",
-        password: "",
-        game: "Valorant",
-        leader: "player1",
-        players: ["player1", "player2", "player3"]
+        id: "4ot5ra",
+        name: "Deneme",
+        type: "etkinlik",
+        password: "1",
+        game: "Tombala",
+        leader: "",
+        players: [],
+        startTime: "2025-04-30T16:20:00.000Z",
+        endTime: "2025-04-30T21:00:00.000Z"
     },
     {
-        id: "lobby2",
-        name: "Minecraft Builders",
+        id: "r6fv3c",
+        name: "Deneme 2",
         type: "normal",
-        password: "build123",
-        game: "Minecraft",
-        leader: "player4",
-        players: ["player4", "player5"]
+        password: "1",
+        game: "UNO",
+        leader: "",
+        players: [],
+        startTime: null,
+        endTime: null
     }
 ];
 
@@ -207,7 +211,9 @@ io.on('connection', (socket) => {
         socket.emit('user-id', socket.id);
     });
 
-    socket.emit('lobbies', lobbies);
+    socket.on('get-lobbies', () => {
+        socket.emit('lobbies', lobbies);
+    });
 
     socket.on('create-lobby', ({ data }) => {
         const { name, type, password, game, eventStartDateTime, eventEndDateTime } = data;

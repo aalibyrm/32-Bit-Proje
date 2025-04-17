@@ -1,11 +1,12 @@
-// src/components/TogglePanel.jsx
 import { Box, Tabs, Tab, Divider } from '@mui/material';
 import { useState } from 'react';
+import { useTheme } from '@mui/material/styles';
 import ChatPanel from './ChatPanel';
 import LobbyPanel from './LobbyPanel';
 
 export default function TogglePanel() {
     const [tab, setTab] = useState(0);
+    const theme = useTheme();
 
     return (
         <Box
@@ -13,7 +14,9 @@ export default function TogglePanel() {
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                borderLeft: '1px solid #2a2d34',
+                borderLeft: `1px solid ${theme.palette.divider}`,
+                bgcolor: theme.palette.background.default,
+                color: theme.palette.text.primary,
             }}
         >
             <Tabs

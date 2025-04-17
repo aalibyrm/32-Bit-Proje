@@ -9,9 +9,11 @@ import { useContext, useEffect, useState } from 'react';
 import socket from '../../socket/socket';
 import { AlertContext } from '../../alert/AlertContext';
 import Countdown from './Countdown';
+import { useTheme } from '@mui/material/styles';
 
 export default function LobbyPanel() {
 
+    const theme = useTheme();
     const { showAlert } = useContext(AlertContext);
     const [lobbies, setLobbies] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
@@ -32,6 +34,7 @@ export default function LobbyPanel() {
     const [lobbyModalOpen, setLobbyModalOpen] = useState(false);
     const [joinModalOpen, setJoinModalOpen] = useState(false);
     const [inputId, setInputId] = useState('');
+
 
     const handleLobbyClick = (lobby) => {
         setSelectedLobby(lobby);
@@ -59,7 +62,7 @@ export default function LobbyPanel() {
         socket.on('lobbies', (lobbies) => {
             setLobbies(lobbies);
         });
-
+        socket.emit('get-lobbies');
 
         socket.on('join-success', (lobby) => {
             showAlert('Lobiye katıldınız', 'success');
@@ -139,12 +142,13 @@ export default function LobbyPanel() {
     };
     return (
         <Box p={2} sx={{
-            overflowY: 'auto', height: '100%', overflowY: 'scroll',
-            '&::-webkit-scrollbar': {
-                display: 'none'
-            },
+            overflowY: 'auto',
+            height: '100%',
+            bgcolor: theme.palette.background.default,
+            color: theme.palette.text.primary,
+            '&::-webkit-scrollbar': { display: 'none' },
             scrollbarWidth: 'none',
-            msOverflowStyle: 'none'
+            msOverflowStyle: 'none',
         }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 {
@@ -169,7 +173,8 @@ export default function LobbyPanel() {
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                     width: 400,
-                    bgcolor: 'background.paper',
+                    bgcolor: theme.palette.background.paper,
+                    color: theme.palette.text.primary,
                     boxShadow: 24,
                     p: 4,
                     borderRadius: 2
@@ -191,8 +196,19 @@ export default function LobbyPanel() {
             </Modal>
 
             <Modal open={modalOpen} onClose={handleClose}>
-                <Box >
-                    <Typography variant="h6" gutterBottom>Yeni Lobi Oluştur</Typography>
+                <Box sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 400,
+                    bgcolor: theme.palette.background.paper,
+                    color: theme.palette.text.primary,
+                    boxShadow: 24,
+                    p: 4,
+                    borderRadius: 2
+                }} >
+                    <Typography variant="h6" gutterBottom color="text.primary">Yeni Lobi Oluştur</Typography>
 
                     <TextField
                         fullWidth
@@ -305,14 +321,18 @@ export default function LobbyPanel() {
 
 
             <Box mt={4}>
-                <Typography variant="h6">📜 Mevcut Lobiler</Typography>
+                <Typography variant="h6" color="text.primary"> Mevcut Lobiler</Typography>
                 {lobbies.length === 0 ? (
-                    <Typography>Hiç lobi yok.</Typography>
+                    <Typography >Hiç lobi yok.</Typography>
                 ) : (
                     sortedLobbies.map((lobby) => (
-                        <Box key={lobby.id} sx={{ borderBottom: '1px solid #ccc', py: 1, cursor: 'pointer', }}>
-                            <Typography onClick={() => handleLobbyClick(lobby)}>
-                                <strong>{lobby.name}</strong> | 🎮 {lobby.game} | 🧭 {lobby.type}
+                        <Box key={lobby.id} sx={{
+                            borderBottom: `1px solid ${theme.palette.divider}`,
+                            py: 1,
+                            cursor: 'pointer',
+                        }}>
+                            <Typography onClick={() => handleLobbyClick(lobby)} color="text.primary">
+                                <Box component="strong">{lobby.name}</Box> |  {lobby.game} |  {lobby.type}
                             </Typography>
                             <Typography variant="body2">
                                 Oyuncular: {lobby.players.length}
@@ -358,19 +378,21 @@ export default function LobbyPanel() {
                 )}
             </Box>
 
-            <Modal open={lobbyModalOpen} onClose={handleCloseLobbyModal}>
+            <Modal open={lobbyModalOpen} onClose={handleCloseLobbyModal}
+            >
                 <Box sx={{
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                     width: 400,
-                    bgcolor: 'background.paper',
+                    bgcolor: theme.palette.background.paper,
+                    color: theme.palette.text.primary,
                     boxShadow: 24,
                     p: 4,
                     borderRadius: 2
                 }}>
-                    <Typography variant="h6" gutterBottom>
+                    <Typography variant="h6" gutterBottom color="text.primary">
                         Lobi Detayları
                     </Typography>
                     {selectedLobby && (
@@ -410,7 +432,8 @@ export default function LobbyPanel() {
                             left: '50%',
                             transform: 'translate(-50%, -50%)',
                             width: 400,
-                            bgcolor: 'background.paper',
+                            bgcolor: theme.palette.background.paper,
+                            color: theme.palette.text.primary,
                             boxShadow: 24,
                             p: 4,
                             borderRadius: 2

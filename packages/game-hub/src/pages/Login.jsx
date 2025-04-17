@@ -2,14 +2,15 @@ import React, { useContext, useEffect, useState } from 'react'
 import Box from '@mui/material/Box';
 import { Avatar, Button, Checkbox, Container, Divider, FormControlLabel, Grid, Link, TextField, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import { ThemeContext } from '@emotion/react';
 import ThemeToggleButton from '../components/ThemeToggleButton';
 import AuthContext from '../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@emotion/react';
 
 function Login() {
 
-    const { mode } = useContext(ThemeContext);
+    const theme = useTheme();
+    const mode = theme.palette.mode;
     const { login, rememberToken, rememberUser } = useContext(AuthContext);
     const navigate = useNavigate();
 

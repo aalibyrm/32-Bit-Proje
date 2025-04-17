@@ -1,4 +1,3 @@
-// src/components/ChatPanel.jsx
 import {
     Box,
     Typography,
@@ -8,6 +7,7 @@ import {
     Avatar,
     ListItemText,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 const messages = [
     {
@@ -25,9 +25,11 @@ const messages = [
 ];
 
 export default function ChatPanel() {
+    const theme = useTheme();
+
     return (
         <Box p={2}>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h6" gutterBottom color="text.primary">
                 Aktif Sohbet
             </Typography>
             <List>
@@ -39,7 +41,7 @@ export default function ChatPanel() {
                         <ListItemText
                             primary={`${msg.name} • ${msg.time}`}
                             secondary={msg.msg}
-                            sx={{ color: 'white' }}
+                            sx={{ color: theme.palette.text.primary }}
                         />
                     </ListItem>
                 ))}

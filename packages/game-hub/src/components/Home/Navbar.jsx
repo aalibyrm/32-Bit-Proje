@@ -1,32 +1,93 @@
-// src/components/Navbar.jsx
-import { AppBar, Toolbar, Typography, IconButton, Box, Avatar, Button, InputBase, Paper } from '@mui/material';
+import {
+    AppBar,
+    Toolbar,
+    Typography,
+    IconButton,
+    Box,
+    Button,
+    Menu,
+    MenuItem,
+} from '@mui/material';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
-import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ThemeToggleButton from '../ThemeToggleButton';
+import { useTheme } from '@mui/material/styles';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 export default function Navbar() {
+    const theme = useTheme();
+    const navigate = useNavigate();
+
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleAvatarClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleLogout = () => {
+        navigate("/logout", { replace: true });
+        handleClose();
+    };
+
     return (
-        <AppBar position="static" color="primary" elevation={2}>
+        <AppBar
+            position="static"
+            elevation={2}
+            sx={{
+                bgcolor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+            }}
+        >
             <Toolbar sx={{ justifyContent: 'space-between' }}>
                 {/* Left Side: Logo and Links */}
                 <Box display="flex" alignItems="center" gap={2}>
-                    <SportsEsportsIcon fontSize="large" color="primary" sx={{ marginLeft: '16px' }} />
-                    <Typography variant="h6" fontWeight={700} sx={{ marginRight: '70px' }}>GAME HUB</Typography>
-                    <Button color="inherit">Ana Sayfa</Button>
-                    <Button color="inherit">Oyunlar</Button>
+                    <SportsEsportsIcon
+                        fontSize="large"
+                        sx={{ color: theme.palette.primary.main, ml: 2 }}
+                    />
+                    <Typography variant="h6" fontWeight={700} sx={{ mr: 8 }}>
+                        GAME HUB
+                    </Typography>
+                    <Button sx={{ color: theme.palette.text.primary }}>Ana Sayfa</Button>
+                    <Button sx={{ color: theme.palette.text.primary }}>Oyunlar</Button>
                 </Box>
 
-                {/* Right Side: Icons and Profile */}
+                {/* Right Side: Theme & Avatar */}
                 <Box display="flex" alignItems="center" gap={2}>
                     <ThemeToggleButton />
-                    <IconButton color="inherit">
+                    <IconButton sx={{ color: theme.palette.text.primary }}>
                         <NotificationsIcon />
                     </IconButton>
-                    <IconButton color="inherit">
+
+                    <IconButton onClick={handleAvatarClick} sx={{ color: theme.palette.text.primary }}>
                         <AccountCircleIcon />
                     </IconButton>
+
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                    >
+                        <Box onClick={handleLogout} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
+                            <MenuItem sx={{
+                                '&:hover': {
+                                    backgroundColor: 'transparent'
+                                }
+                            }}>Çıkış Yap</MenuItem>
+                            <LogoutIcon />
+                        </Box>
+
+                    </Menu>
                 </Box>
             </Toolbar>
         </AppBar>
