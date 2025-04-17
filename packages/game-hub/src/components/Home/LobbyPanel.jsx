@@ -3,7 +3,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
 import { Box, Typography, List, ListItem, ListItemIcon, ListItemText, Modal, Button, TextField, InputLabel, Select, MenuItem, FormControl } from '@mui/material';
-import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useContext, useEffect, useState } from 'react';
 import socket from '../../socket/socket';
@@ -251,20 +250,21 @@ export default function LobbyPanel() {
                                         setNewLobby({
                                             ...newLobby,
                                             eventStartDateTime: newValue ? newValue.toISOString() : null,
-                                            // Başlangıç tarihi değiştiğinde, bitiş tarihi başlangıçtan önceyse sıfırlar
                                             eventEndDateTime: newValue && newLobby.eventEndDateTime && dayjs(newLobby.eventEndDateTime).isBefore(newValue)
                                                 ? null
                                                 : newLobby.eventEndDateTime
                                         });
                                     }}
                                     minDateTime={dayjs()}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            fullWidth
-                                            margin="normal"
-                                        />
-                                    )}
+                                    slots={{
+                                        textField: TextField,
+                                    }}
+                                    slotProps={{
+                                        textField: {
+                                            fullWidth: true,
+                                            margin: 'normal',
+                                        },
+                                    }}
                                 />
 
                                 <DateTimePicker
@@ -279,16 +279,18 @@ export default function LobbyPanel() {
                                     }}
                                     minDateTime={
                                         newLobby.eventStartDateTime
-                                            ? dayjs(newLobby.eventStartDateTime) // Başlangıç tarihinden öncesini engeller
-                                            : dayjs() // Eğer başlangıç tarihi yoksa şu anın öncesini engeller
+                                            ? dayjs(newLobby.eventStartDateTime)
+                                            : dayjs()
                                     }
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            fullWidth
-                                            margin="normal"
-                                        />
-                                    )}
+                                    slots={{
+                                        textField: TextField,
+                                    }}
+                                    slotProps={{
+                                        textField: {
+                                            fullWidth: true,
+                                            margin: 'normal',
+                                        },
+                                    }}
                                 />
                             </LocalizationProvider>
                         )}
@@ -406,6 +408,7 @@ export default function LobbyPanel() {
                     )}
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Button variant='contained'
+                            sx={{ mt: 2 }}
                             onClick={() => {
                                 navigator.clipboard.writeText(selectedLobby.id);
                                 showAlert('Kod kopyalandı!', 'success');
