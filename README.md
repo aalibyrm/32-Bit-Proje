@@ -13,6 +13,8 @@ Bir monorepo proje yapısı içerisinde React + Vite tabanlı bir oyun lobisi ve
 - Şifreli lobilere katılma
 - Kullanıcı girişi & Remember Me (JWT tabanlı hızlı giriş)
 - Dark/Light tema desteği (MUI)
+-Session ile oturum kontrolü
+-Alert bildirimleri
 
 ## Gereksinimler
 
