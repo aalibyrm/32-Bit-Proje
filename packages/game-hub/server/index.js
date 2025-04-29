@@ -161,31 +161,40 @@ app.post('/logout', (req, res) => {
     })
 })
 
-/* 
-let lobbies = [];
- */
+
+// Lobi kısmı
+
+const gameSettings = {
+    'Tombala': 16,
+    'Satranç': 2,
+    'Mangala': 2,
+    'UNO': 4,
+};
+
 let lobbies = [
     {
         id: "4ot5ra",
         name: "Deneme",
-        type: "etkinlik",
+        type: "Etkinlik",
         password: "1",
         game: "Tombala",
-        leader: "",
-        players: [],
+        leader: "kullanici1",
+        players: [13215],
         startTime: "2025-04-30T16:20:00.000Z",
-        endTime: "2025-04-30T21:00:00.000Z"
+        endTime: "2025-04-30T21:00:00.000Z",
+        maxPlayers: 16
     },
     {
         id: "r6fv3c",
         name: "Deneme 2",
-        type: "normal",
+        type: "Normal",
         password: "1",
         game: "UNO",
-        leader: "",
-        players: [],
+        leader: "kullanici2",
+        players: [33, 22, 11, 2],
         startTime: null,
-        endTime: null
+        endTime: null,
+        maxPlayers: 4
     }
 ];
 
@@ -219,6 +228,7 @@ io.on('connection', (socket) => {
         const { name, type, password, game, eventStartDateTime, eventEndDateTime } = data;
         const lobbyId = generateLobbyId();
         const leaderId = socket.id;
+        const maxPlayers = gameSettings[game];
 
         const newLobby = {
             id: lobbyId,
@@ -229,7 +239,8 @@ io.on('connection', (socket) => {
             leader: leaderId,
             players: [leaderId],
             startTime: eventStartDateTime,
-            endTime: eventEndDateTime
+            endTime: eventEndDateTime,
+            maxPlayers
         };
 
         lobbies.push(newLobby);

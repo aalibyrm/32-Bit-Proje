@@ -13,6 +13,7 @@ import FastLoginHandler from './components/FastLoginHandler';
 import LoginRoute from './components/LoginRoute';
 import { AlertProvider } from './alert/AlertContext';
 import AlertManager from './components/AlertManager';
+import './App.css';
 
 function App() {
     return (

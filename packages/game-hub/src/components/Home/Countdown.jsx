@@ -1,5 +1,6 @@
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react'
+import EventIcon from '@mui/icons-material/Event';
 
 const Countdown = ({ date }) => {
     const [hoursDifference, setHoursDifference] = useState('');
@@ -44,9 +45,13 @@ const Countdown = ({ date }) => {
     }, [date])
 
     return (
-        <Typography variant="body2">
-            Tarih: {hoursDifference}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <EventIcon sx={{ mr: 1 }} />
+
+            <Typography variant="body2" color="text.secondary" >
+                {hoursDifference}
+            </Typography>
+        </Box >
     )
 }
 

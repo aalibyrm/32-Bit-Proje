@@ -6,6 +6,7 @@ import ThemeToggleButton from '../components/ThemeToggleButton';
 import AuthContext from '../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@emotion/react';
+import { AlertContext } from '../alert/AlertContext';
 
 function Login() {
 
@@ -13,6 +14,7 @@ function Login() {
     const mode = theme.palette.mode;
     const { login, rememberToken, rememberUser } = useContext(AuthContext);
     const navigate = useNavigate();
+    const { showAlert } = useContext(AlertContext)
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -31,6 +33,10 @@ function Login() {
     useEffect(() => {
         rememberToken();
     }, []);
+
+    const resetPassword = () => {
+        showAlert('Sıfırlama bağlantısı gönderildi', 'success');
+    }
 
 
     return (
@@ -212,7 +218,8 @@ function Login() {
                                                 />}
                                                 label="Beni hatırla"
                                             />
-                                            <Link underline="hover" variant="body2" onClick={() => setForgotPassword(false)} >
+                                            <Link underline="hover" variant="body2" onClick={() => setForgotPassword(false)}
+                                                sx={{ cursor: 'pointer' }}>
                                                 Şifremi Unuttum
                                             </Link>
                                         </Box>
@@ -234,8 +241,6 @@ function Login() {
                                             label="E-posta Adresi"
                                             autoFocus
                                             size="small"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
                                             required
                                         />
                                         <Box sx={{
@@ -245,15 +250,18 @@ function Login() {
                                             alignItems: 'center'
                                         }}>
 
-                                            <Link onClick={() => setForgotPassword(true)} underline="hover" variant="body2" >
+                                            <Link onClick={() => setForgotPassword(true)} underline="hover" variant="body2" sx={{
+                                                cursor: 'pointer'
+                                            }}>
                                                 Giriş Yap
                                             </Link>
                                         </Box>
                                         <Button
                                             fullWidth
-                                            type='submit'
+
                                             variant="contained"
                                             sx={{ mt: 4, mb: 2 }}
+                                            onClick={() => resetPassword()}
                                         >
                                             Sıfırla
                                         </Button>

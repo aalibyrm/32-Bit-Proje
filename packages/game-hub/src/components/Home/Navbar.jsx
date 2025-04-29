@@ -47,7 +47,7 @@ export default function Navbar() {
             }}
         >
             <Toolbar sx={{ justifyContent: 'space-between' }}>
-                {/* Left Side: Logo and Links */}
+
                 <Box display="flex" alignItems="center" gap={2}>
                     <SportsEsportsIcon
                         fontSize="large"
@@ -60,7 +60,6 @@ export default function Navbar() {
                     <Button sx={{ color: theme.palette.text.primary }}>Oyunlar</Button>
                 </Box>
 
-                {/* Right Side: Theme & Avatar */}
                 <Box display="flex" alignItems="center" gap={2}>
                     <ThemeToggleButton />
                     <IconButton sx={{ color: theme.palette.text.primary }}>

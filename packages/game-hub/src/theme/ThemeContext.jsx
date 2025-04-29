@@ -24,7 +24,43 @@ const themeColors = (mode) =>
             divider: mode === "dark" ? "#333" : "#ccc",
         },
         typography: {
-            fontFamily: 'Poppins, sans-serif',
+            fontFamily: '"Poppins", sans-serif',
+            h1: {
+                fontSize: '1.802rem',
+            },
+            h2: {
+                fontSize: '1.602rem',
+                fontWeight: 700,
+            },
+            h3: {
+                fontSize: '1.424rem',
+                fontWeight: 700,
+            },
+            h4: {
+                fontSize: '1.266rem',
+                fontWeight: 700,
+            },
+            h5: {
+                fontSize: '1.125rem',
+                fontWeight: 700,
+            },
+
+            body1: {
+                fontWeight: 400,
+            },
+            body2: {
+                fontWeight: 400,
+            },
+
+            caption: {
+                fontSize: '0.700rem',
+                fontWeight: 200,
+            },
+
+            button: {
+                fontWeight: 700,
+                textTransform: 'none',
+            },
         },
     });
 

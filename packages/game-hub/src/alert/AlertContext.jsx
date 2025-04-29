@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-
 export const AlertContext = createContext();
 
 export const AlertProvider = ({ children }) => {

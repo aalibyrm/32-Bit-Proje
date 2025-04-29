@@ -30,7 +30,7 @@ export default function Sidebar() {
                 padding: 1,
             }}
         >
-            {/* 🎰 Oyunlar */}
+
             <List dense>
                 <ListItemButton>
                     <ListItemIcon sx={{ color: theme.palette.text.primary }}>
@@ -61,7 +61,7 @@ export default function Sidebar() {
                 </ListItemButton>
             </List>
 
-            {/* 🌍 Dil Seçimi */}
+
             <Box mt="auto">
                 <Typography variant="h6" sx={{ mb: 1 }}>
                     Dil
