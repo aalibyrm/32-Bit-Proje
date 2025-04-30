@@ -34,8 +34,8 @@ export default function CreateLobbyModal({ open, handleClose, newLobby, setNewLo
                         label="Lobi Türü"
                         onChange={(e) => setNewLobby({ ...newLobby, type: e.target.value })}
                     >
-                        <MenuItem value="Normal">Normal</MenuItem>
-                        <MenuItem value="Etkinlik">Etkinlik</MenuItem>
+                        <MenuItem value="normal">Normal</MenuItem>
+                        <MenuItem value="etkinlik">Etkinlik</MenuItem>
                     </Select>
                 </FormControl>
 

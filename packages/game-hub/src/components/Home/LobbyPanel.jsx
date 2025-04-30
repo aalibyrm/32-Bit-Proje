@@ -2,8 +2,11 @@
 import { useContext, useEffect, useState } from 'react';
 import { Box, Button, Typography, Modal, TextField } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import socket from '../../socket/socket';
 import { AlertContext } from '../../alert/AlertContext';
+import Countdown from './Countdown';
 import CreateLobbyModal from './Lobby/CreateLobbyModal';
 import JoinLobbyModal from './Lobby/JoinLobbyModal';
 import LobbyDetailsModal from './Lobby/LobbyDetailsModal';
@@ -35,7 +38,6 @@ export default function LobbyPanel() {
 
     useEffect(() => {
         const handleConnect = () => {
-            console.log('✅ Socket bağlı:', socket.id);
             socket.emit('get-user-id');
             socket.emit('get-lobbies');
         };
@@ -47,12 +49,10 @@ export default function LobbyPanel() {
         }
 
         socket.on('user-id', (id) => {
-            console.log('🧠 Kullanıcı ID alındı:', id);
             setUserId(id);
         });
 
         socket.on('lobbies', (data) => {
-            console.log('📦 Lobiler geldi:', data);
             setLobbies(data);
         });
 
@@ -73,7 +73,6 @@ export default function LobbyPanel() {
             socket.off('join-error');
         };
     }, [showAlert]);
-
 
     const handleOpen = () => setModalOpen(true);
     const handleClose = () => setModalOpen(false);

@@ -8,7 +8,8 @@ import CrownIcon from './CrownIcon';
 
 export default function LobbyItem({ lobby, userId, handleLobbyClick, leaveLobby, requestJoin, deleteLobby }) {
 
-    const isFull = lobby.players.length === lobby.maxPlayers;
+    const isUserInLobby = lobby.players.includes(userId);
+    const isFull = lobby.players.length >= lobby.maxPlayers && !isUserInLobby;
 
     return (
         <Card
@@ -72,7 +73,7 @@ export default function LobbyItem({ lobby, userId, handleLobbyClick, leaveLobby,
                 )}
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
-                    {lobby.players.includes(userId) ? (
+                    {isUserInLobby ? (
                         <Button
                             variant="outlined"
                             color="primary"
