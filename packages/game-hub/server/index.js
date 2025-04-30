@@ -7,23 +7,14 @@ import cookieParser from 'cookie-parser';
 import users from './users.js'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
-import passLogin from './PassLogin.js';
 import { Server } from 'socket.io';
 import http from 'http';
+import { lobbyHandler } from './lobby.js';
 
 const app = express();
 const server = http.createServer(app);
-
-const io = new Server(server, {
-    cors: {
-        origin: 'http://localhost:5173',
-        methods: ['GET', 'POST']
-    }
-});
-
 dotenv.config();
-app.use(cookieParser());
-app.use(session({
+const sessionMiddleware = session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
@@ -32,7 +23,21 @@ app.use(session({
         httpOnly: true,
         sameSite: "lax"
     }
-}));
+});
+app.use(cookieParser());
+app.use(sessionMiddleware);
+
+const io = new Server(server, {
+    cors: {
+        origin: 'http://localhost:5173',
+        methods: ['GET', 'POST'],
+        credentials: true
+    }
+});
+
+
+
+
 
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -42,6 +47,9 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+io.engine.use((req, _, next) => {
+    sessionMiddleware(req, {}, next);
+});
 
 function hashPassword(password) {
     return crypto.createHash("sha256")
@@ -49,9 +57,9 @@ function hashPassword(password) {
         .digest("hex");
 }
 
-app.post('/login', (req, res) => {
+app.post('/login', sessionMiddleware, (req, res) => {
     const { email, password, rememberMe } = req.body;
-
+    console.log(">> SESSION TEST:", req.session);
 
     if (!email || !password) {
         return res.status(400).json({ error: "Email ve şifre gereklidir!" });
@@ -62,11 +70,11 @@ app.post('/login', (req, res) => {
     const user = users.find(u => u.email === email && u.password === hashedPassword);
 
     if (user) {
-        req.session.user = { email: user.email, rememberMe: rememberMe };
+        req.session.user = { email: user.email, rememberMe: rememberMe, userId: user.userId };
 
         if (rememberMe) {
 
-            const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' })
+            const token = jwt.sign({ email: user.email, userId: user.userId }, process.env.JWT_SECRET, { expiresIn: '7d' })
 
             res.cookie('rememberMeToken', token, {
                 httpOnly: true,
@@ -83,7 +91,7 @@ app.post('/login', (req, res) => {
         });
 
     } else {
-        res.status(401).json({ success: false, message: "Invalid username or password" });
+        res.status(401).json({ success: false, message: "Hatalı kullanıcı adı veya şifre!" });
     }
 
 })
@@ -111,7 +119,7 @@ app.get('/fast-login', (req, res) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        req.session.user = { email: decoded.email, rememberMe: true };
+        req.session.user = { email: decoded.email, userId: decoded.userId, rememberMe: true };
         res.json({ message: 'Hızlı giriş başarılı', user: req.session.user });
 
 
@@ -164,132 +172,7 @@ app.post('/logout', (req, res) => {
 
 // Lobi kısmı
 
-const gameSettings = {
-    'Tombala': 16,
-    'Satranç': 2,
-    'Mangala': 2,
-    'UNO': 4,
-};
-
-let lobbies = [
-    {
-        id: "4ot5ra",
-        name: "Deneme",
-        type: "Etkinlik",
-        password: "1",
-        game: "Tombala",
-        leader: "kullanici1",
-        players: [13215],
-        startTime: "2025-04-30T16:20:00.000Z",
-        endTime: "2025-04-30T21:00:00.000Z",
-        maxPlayers: 16
-    },
-    {
-        id: "r6fv3c",
-        name: "Deneme 2",
-        type: "Normal",
-        password: "1",
-        game: "UNO",
-        leader: "kullanici2",
-        players: [33, 22, 11, 2],
-        startTime: null,
-        endTime: null,
-        maxPlayers: 4
-    }
-];
-
-const checkExpiredLobbies = () => {
-    const now = new Date();
-    lobbies = lobbies.filter(lobby => {
-        if (lobby.type === "etkinlik" && lobby.endTime) {
-            return new Date(lobby.endTime) > now;
-        }
-        return true;
-    });
-    io.emit('lobbies', lobbies);
-};
-
-setInterval(checkExpiredLobbies, 60000);
-
-
-io.on('connection', (socket) => {
-    console.log('🟢 Client connected:', socket.id);
-
-    socket.on('get-user-id', () => {
-        console.log('📦 get-user-id received, sending back:', socket.id);
-        socket.emit('user-id', socket.id);
-    });
-
-    socket.on('get-lobbies', () => {
-        socket.emit('lobbies', lobbies);
-    });
-
-    socket.on('create-lobby', ({ data }) => {
-        const { name, type, password, game, eventStartDateTime, eventEndDateTime } = data;
-        const lobbyId = generateLobbyId();
-        const leaderId = socket.id;
-        const maxPlayers = gameSettings[game];
-
-        const newLobby = {
-            id: lobbyId,
-            name,
-            type,
-            password,
-            game,
-            leader: leaderId,
-            players: [leaderId],
-            startTime: eventStartDateTime,
-            endTime: eventEndDateTime,
-            maxPlayers
-        };
-
-        lobbies.push(newLobby);
-        socket.join(lobbyId);
-        io.emit('lobbies', lobbies);
-
-
-    });
-
-
-    socket.on('join-lobby', ({ lobbyId, password }) => {
-        const lobby = lobbies.find(l => l.id === lobbyId);
-
-        if (!lobby) return;
-
-        const check = lobbies.find(l => l.players.includes(socket.id));
-
-        if (!check) {
-            if (lobby.password && lobby.password !== password) {
-                socket.emit('join-error', 'Şifre yanlış!');
-                return;
-            }
-
-            if (!lobby.players.includes(socket.id)) {
-                lobby.players.push(socket.id);
-            }
-            io.emit('lobbies', lobbies);
-            socket.emit('join-success', lobby);
-        }
-
-    });
-
-    socket.on('leave-lobby', (lobbyId) => {
-        const lobby = lobbies.find(l => l.id === lobbyId);
-        if (lobby) {
-            lobby.players = lobby.players.filter(id => id !== socket.id);
-            io.emit('lobbies', lobbies);
-        }
-    });
-
-    socket.on('delete-lobby', (lobbyId) => {
-        lobbies = lobbies.filter(l => l.id !== lobbyId);
-        io.emit('lobbies', lobbies);
-    })
-});
-
-function generateLobbyId() {
-    return Math.random().toString(36).substr(2, 6);
-}
+lobbyHandler(io);
 
 server.listen(4000, () => {
     console.log('Server 4000 portunda çalışıyor.');

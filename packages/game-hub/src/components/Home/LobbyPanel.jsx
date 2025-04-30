@@ -2,11 +2,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { Box, Button, Typography, Modal, TextField } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import socket from '../../socket/socket';
 import { AlertContext } from '../../alert/AlertContext';
-import Countdown from './Countdown';
 import CreateLobbyModal from './Lobby/CreateLobbyModal';
 import JoinLobbyModal from './Lobby/JoinLobbyModal';
 import LobbyDetailsModal from './Lobby/LobbyDetailsModal';
@@ -37,10 +34,27 @@ export default function LobbyPanel() {
     const [userId, setUserId] = useState(null);
 
     useEffect(() => {
-        socket.emit('get-user-id');
-        socket.on('user-id', (id) => setUserId(id));
-        socket.on('lobbies', (lobbies) => setLobbies(lobbies));
-        socket.emit('get-lobbies');
+        const handleConnect = () => {
+            console.log('✅ Socket bağlı:', socket.id);
+            socket.emit('get-user-id');
+            socket.emit('get-lobbies');
+        };
+
+        if (socket.connected) {
+            handleConnect();
+        } else {
+            socket.on('connect', handleConnect);
+        }
+
+        socket.on('user-id', (id) => {
+            console.log('🧠 Kullanıcı ID alındı:', id);
+            setUserId(id);
+        });
+
+        socket.on('lobbies', (data) => {
+            console.log('📦 Lobiler geldi:', data);
+            setLobbies(data);
+        });
 
         socket.on('join-success', () => {
             showAlert('Lobiye katıldınız', 'success');
@@ -52,12 +66,14 @@ export default function LobbyPanel() {
         socket.on('join-error', (msg) => setError(msg));
 
         return () => {
+            socket.off('connect', handleConnect);
             socket.off('user-id');
             socket.off('lobbies');
             socket.off('join-success');
             socket.off('join-error');
         };
     }, [showAlert]);
+
 
     const handleOpen = () => setModalOpen(true);
     const handleClose = () => setModalOpen(false);

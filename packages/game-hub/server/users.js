@@ -1,10 +1,12 @@
 import crypto from 'crypto';
 
-const users = [
-    { email: 'aalibyrm03@gmail.com', password: crypto.createHash('sha256').update('1234').digest('hex') },
-    { email: 'abc@gmail.com', password: crypto.createHash('sha256').update('2222').digest('hex') },
-    { email: 'xyz@gmail.com', password: crypto.createHash('sha256').update('aaa').digest('hex') }
+const hash = (str) => crypto.createHash('sha256').update(str).digest('hex');
 
+const users = [
+    { userId: 'kullanici1', email: 'aalibyrm03@gmail.com', password: hash('1234') },
+    { userId: 'kullanici2', email: 'abc@gmail.com', password: hash('2222') },
+    { userId: 'kullanici3', email: 'xyz@gmail.com', password: hash('aaa') }
 ];
 
 export default users;
+

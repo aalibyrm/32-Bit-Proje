@@ -4,7 +4,7 @@ import AuthContext from '../auth/AuthContext';
 import LoadingScreen from './LoadingScreen';
 
 const LogoutHandler = () => {
-    const { logout } = useContext(AuthContext);
+    const { logout, rememberToken } = useContext(AuthContext);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -12,7 +12,6 @@ const LogoutHandler = () => {
             await logout();
             navigate('/login', { replace: true });
         };
-
         performLogout();
     }, [logout, navigate]);
 

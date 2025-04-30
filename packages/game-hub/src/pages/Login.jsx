@@ -21,6 +21,7 @@ function Login() {
     const [rememberMe, setRememberMe] = useState(false);
     const [forgotPassword, setForgotPassword] = useState(true);
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         await login(email, password, rememberMe);
@@ -119,7 +120,7 @@ function Login() {
                     >
                         <Box
                             sx={{
-                                px: { xs: 4, sm: 6, md: 8 },
+                                px: { xs: 4, sm: 6, md: 6 },
                                 py: 4,
                                 height: '100%',
                                 display: 'flex',
@@ -169,8 +170,8 @@ function Login() {
 
                                             }}
                                         >
-                                            <Divider sx={{ flex: 1 }} />
-                                            <Typography sx={{ px: 1, fontSize: '0.8rem', }}>veya</Typography>
+                                            <Divider sx={{ backgroundColor: 'red', flex: 1, }} />
+                                            <Typography sx={{ px: 1, fontSize: '0.8rem' }}>veya</Typography>
                                             <Divider sx={{ flex: 1 }} />
                                         </Box>
 

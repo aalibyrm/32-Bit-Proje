@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import api from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import { AlertContext } from '../alert/AlertContext';
+import socket from '../socket/socket';
 
 const AuthContext = createContext();
 
@@ -9,7 +10,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(undefined);
-    const [rememberUser, setRememberUser] = useState(undefined);
+    const [rememberUser, setRememberUser] = useState(null);
     const { showAlert } = useContext(AlertContext);
     const navigate = useNavigate();
 
@@ -29,6 +30,7 @@ export const AuthProvider = ({ children }) => {
         try {
             await api.post("http://localhost:4000/logout", { withCredentials: true });
             setUser(null);
+            setRememberUser(null);
             showAlert('Çıkış başarılı', 'success')
 
         } catch (err) {
@@ -71,6 +73,14 @@ export const AuthProvider = ({ children }) => {
 
         checkSession();
     }, []);
+
+    useEffect(() => {
+        if (user) {
+            socket.connect();
+        } else {
+            socket.disconnect();
+        }
+    }, [user]);
 
     return <AuthContext.Provider value={{ user, login, logout, fastLogin, rememberToken, rememberUser }}>{children}</AuthContext.Provider>;
 }
