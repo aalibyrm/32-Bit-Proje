@@ -18,9 +18,9 @@ export default function LobbyDetailsModal({ open, handleClose, selectedLobby, sh
                 position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
                 width: 400, bgcolor: 'background.paper', color: 'text.primary', boxShadow: 24, p: 1.5, borderRadius: 2
             }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Typography variant="h6" gutterBottom>Lobi Detayları</Typography>
-                    <Close onClick={handleClose} sx={{ cursor: 'pointer' }} />
+                    <Close fontSize='medium' onClick={handleClose} sx={{ cursor: 'pointer' }} />
                 </Box>
                 <Divider sx={{ width: '100%', mb: 2 }} />
 

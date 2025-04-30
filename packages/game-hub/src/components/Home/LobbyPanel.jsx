@@ -53,6 +53,7 @@ export default function LobbyPanel() {
         });
 
         socket.on('lobbies', (data) => {
+            console.log(data)
             setLobbies(data);
         });
 
@@ -146,7 +147,7 @@ export default function LobbyPanel() {
             msOverflowStyle: 'none',
         }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                {!isLeader && <Button variant="contained" color="primary" onClick={handleOpen}>Lobi Oluştur</Button>}
+                {!isLeader && !isInLobby && <Button variant="contained" color="primary" onClick={handleOpen}>Lobi Oluştur</Button>}
                 {!isInLobby && <Button variant="contained" color="primary" onClick={handleOpenJoinModal}>Lobiye Katıl</Button>}
             </Box>
 

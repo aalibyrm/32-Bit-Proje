@@ -22,7 +22,7 @@ export default function Sidebar() {
         <Box
             sx={{
                 height: '100%',
-                bgcolor: theme.palette.background.paper,
+                bgcolor: theme.palette.background.default,
                 color: theme.palette.text.primary,
                 borderRight: `1px solid ${theme.palette.divider}`,
                 display: 'flex',

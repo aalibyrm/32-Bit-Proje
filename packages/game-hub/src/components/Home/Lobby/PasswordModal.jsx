@@ -1,4 +1,3 @@
-// LobbyPanel/components/PasswordModal.jsx
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
 
 export default function PasswordModal({ open, handleClose, joinPassword, setJoinPassword, submitJoin, error }) {

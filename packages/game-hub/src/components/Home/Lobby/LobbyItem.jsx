@@ -9,7 +9,7 @@ import CrownIcon from './CrownIcon';
 export default function LobbyItem({ lobby, userId, handleLobbyClick, leaveLobby, requestJoin, deleteLobby }) {
 
     const isUserInLobby = lobby.players.includes(userId);
-    const isFull = lobby.players.length >= lobby.maxPlayers && !isUserInLobby;
+    const isFull = lobby.players.length === lobby.maxPlayers
 
     return (
         <Card
@@ -66,6 +66,7 @@ export default function LobbyItem({ lobby, userId, handleLobbyClick, leaveLobby,
                     </Typography>
                 </Box>
 
+                {/* Etkinlik lobisiyse */}
                 {lobby.startTime && (
                     <Box sx={{ mb: 2 }}>
                         <Countdown date={lobby.startTime} />
@@ -73,6 +74,8 @@ export default function LobbyItem({ lobby, userId, handleLobbyClick, leaveLobby,
                 )}
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
+
+                    {/* Kullanıcı lobideyse */}
                     {isUserInLobby ? (
                         <Button
                             variant="outlined"
@@ -82,9 +85,12 @@ export default function LobbyItem({ lobby, userId, handleLobbyClick, leaveLobby,
                         >
                             Ayrıl
                         </Button>
+
+                        /* Lobi doluysa */
                     ) : isFull ? (
                         <Typography sx={{ mt: 1 }}>Dolu</Typography>
                     ) : (
+                        /* Lobi boşsa ve kullanıcı lobide değilse */
                         <Button
                             variant="contained"
                             color="primary"
@@ -95,6 +101,7 @@ export default function LobbyItem({ lobby, userId, handleLobbyClick, leaveLobby,
                         </Button>
                     )}
 
+                    {/* Kullanıcı lobiyi oluşturmussa */}
                     {lobby.leader === userId && (
                         <Button
                             variant="text"

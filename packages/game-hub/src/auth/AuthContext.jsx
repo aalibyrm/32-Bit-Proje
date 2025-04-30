@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
             showAlert('Çıkış başarılı', 'success')
 
         } catch (err) {
-            console.error("Çıkış hatası:", err.response?.data?.message);
+            console.error("Çıkış hatası:", err.response.data.message);
         }
     };
 
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
             setUser(res.data.user);
             showAlert('Giriş başarılı', 'success');
         } catch (err) {
-            console.error("Giriş hatası:", err.response?.data?.message || err.message);
+            console.error("Giriş hatası:", err.response.data.message);
         }
 
     }
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
             const res = await api.get("http://localhost:4000/token-control", { withCredentials: true });
             setRememberUser(res.data.user);
         } catch (err) {
-            console.error("Giriş hatası:", err.response?.data?.message || err.message);
+            console.error("Giriş hatası:", err.response.data.message || err.message);
         }
     }
 

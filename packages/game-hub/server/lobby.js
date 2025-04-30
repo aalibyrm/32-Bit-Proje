@@ -1,4 +1,3 @@
-// lobby.js
 let lobbies = [
     {
         id: "4ot5ra",
@@ -6,9 +5,9 @@ let lobbies = [
         type: "Etkinlik",
         password: "1",
         game: "Tombala",
-        leader: "kullanici4",
+        leader: "kurucu1",
         players: [13215],
-        startTime: "2025-04-30T16:20:00.000Z",
+        startTime: "2025-04-30T13:20:00.000Z",
         endTime: "2025-04-30T21:00:00.000Z",
         maxPlayers: 16
     },
@@ -18,7 +17,7 @@ let lobbies = [
         type: "Normal",
         password: "1",
         game: "UNO",
-        leader: "kullanici5",
+        leader: "kurucu2",
         players: [33, 22, 11, 2],
         startTime: null,
         endTime: null,
@@ -58,12 +57,12 @@ const lobbyHandler = (io) => {
         console.log("SOCKET SESSION CHECK:", socket.request?.session);
 
         if (!user || !user.userId) {
-            console.log('⛔ Yetkisiz socket bağlantısı kesildi.');
             socket.disconnect();
             return;
         }
 
         const userId = user.userId;
+
         socket.on('get-user-id', () => {
             socket.emit('user-id', userId);
         });
@@ -100,17 +99,16 @@ const lobbyHandler = (io) => {
             const lobby = lobbies.find(l => l.id === lobbyId);
             if (!lobby) return;
 
+            //Kullanıcı herhangi bir lobiye katılmış mı
             const check = lobbies.find(l => l.players.includes(userId));
+
             if (!check) {
                 if (lobby.password && lobby.password !== password) {
                     socket.emit('join-error', 'Şifre yanlış!');
                     return;
                 }
 
-                if (!lobby.players.includes(userId)) {
-                    lobby.players.push(userId);
-                }
-
+                lobby.players.push(userId);
                 io.emit('lobbies', lobbies);
                 socket.emit('join-success', lobby);
             }
@@ -119,12 +117,16 @@ const lobbyHandler = (io) => {
         socket.on('leave-lobby', (lobbyId) => {
             const lobby = lobbies.find(l => l.id === lobbyId);
             if (lobby) {
+
+                //Ayrılmak isteyen kullanıcıyı diziden çıkarır
                 lobby.players = lobby.players.filter(id => id !== userId);
                 io.emit('lobbies', lobbies);
             }
         });
 
         socket.on('delete-lobby', (lobbyId) => {
+
+            //Silmek istenilen lobiyi diziden çıkarır
             lobbies = lobbies.filter(l => l.id !== lobbyId);
             io.emit('lobbies', lobbies);
         });

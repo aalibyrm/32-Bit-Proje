@@ -132,6 +132,8 @@ function Login() {
                                 Giriş
                             </Typography>
 
+                            {/*  Kullanıcı hızlı giriş yapmak isterse */}
+
                             {
                                 rememberUser ?
                                     <Box>
@@ -184,6 +186,8 @@ function Login() {
 
 
                             <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+
+                                {/* Şifremi unuttum kısmı */}
                                 {forgotPassword ? (
                                     <>
                                         <TextField

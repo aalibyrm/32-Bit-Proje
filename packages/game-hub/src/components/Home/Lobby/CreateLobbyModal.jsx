@@ -110,8 +110,9 @@ export default function CreateLobbyModal({ open, handleClose, newLobby, setNewLo
                 </FormControl>
 
                 <Box mt={2} display="flex" justifyContent="space-between">
-                    <Button variant="contained" onClick={createLobby}>Oluştur</Button>
                     <Button variant="outlined" color="error" onClick={handleClose}>İptal</Button>
+                    <Button variant="contained" onClick={createLobby}>Oluştur</Button>
+
                 </Box>
             </Box>
         </Modal>

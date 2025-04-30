@@ -35,10 +35,6 @@ const io = new Server(server, {
     }
 });
 
-
-
-
-
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true
@@ -59,7 +55,6 @@ function hashPassword(password) {
 
 app.post('/login', sessionMiddleware, (req, res) => {
     const { email, password, rememberMe } = req.body;
-    console.log(">> SESSION TEST:", req.session);
 
     if (!email || !password) {
         return res.status(400).json({ error: "Email ve şifre gereklidir!" });

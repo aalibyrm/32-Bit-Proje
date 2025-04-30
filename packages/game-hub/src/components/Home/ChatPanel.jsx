@@ -12,13 +12,13 @@ import { useTheme } from '@mui/material/styles';
 const messages = [
     {
         name: 'Jane Cooper',
-        msg: 'He always starts his morning with a cup of coffee ☕',
+        msg: 'Lorem, ipsum dolor.',
         avatar: 'https://i.pravatar.cc/40?img=1',
         time: '12:34',
     },
     {
         name: 'Annette Black',
-        msg: 'My favorite color is blue because it reminds me of the ocean 🌊',
+        msg: 'Lorem ipsum dolor sit amet.',
         avatar: 'https://i.pravatar.cc/40?img=3',
         time: '12:36',
     },
