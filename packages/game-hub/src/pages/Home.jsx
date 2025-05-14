@@ -8,15 +8,15 @@ import Sidebar from '../components/Home/Sidebar';
 function Home() {
     return (
         <Box display="flex" flexDirection="column" height="100vh">
-            <Navbar />
+            {/*   <Navbar /> */}
             <Grid container sx={{ flexGrow: 1, overflow: 'hidden' }}>
 
-                <Grid item xs={2.2} sx={{ height: '100%' }}>
+                <Grid item xs={1.8} sx={{ height: '100%' }}>
                     <Sidebar />
                 </Grid>
 
 
-                <Grid item xs={7.3} sx={{ height: '100%', overflowY: 'auto' }}>
+                <Grid item xs={7.7} sx={{ height: '100%', overflowY: 'auto' }}>
                     <GameList />
                 </Grid>
 

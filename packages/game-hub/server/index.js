@@ -10,6 +10,7 @@ import dotenv from 'dotenv'
 import { Server } from 'socket.io';
 import http from 'http';
 import { lobbyHandler } from './lobby.js';
+import { getNews } from './news.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -163,6 +164,18 @@ app.post('/logout', (req, res) => {
         res.json({ message: "Çıkış başarılı!" });
     })
 })
+
+app.get('/haberler', async (req, res) => {
+    try {
+        const haberler = await getNews();
+        res.json(haberler);
+    } catch (error) {
+        console.error('Haber endpoint hatası:', error);
+        res.status(500).json({
+            error: 'Haberler alınamadı',
+        });
+    }
+});
 
 
 // Lobi kısmı

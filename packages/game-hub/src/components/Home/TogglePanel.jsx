@@ -26,12 +26,13 @@ export default function TogglePanel() {
                 textColor="primary"
                 indicatorColor="primary"
             >
-                <Tab label="Sohbet" />
                 <Tab label="Lobi" />
+                <Tab label="Sohbet" />
+
             </Tabs>
             <Divider />
             <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
-                {tab === 0 ? <ChatPanel /> : <LobbyPanel />}
+                {tab === 0 ? <LobbyPanel /> : <ChatPanel />}
             </Box>
         </Box>
     );

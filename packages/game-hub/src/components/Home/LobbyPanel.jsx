@@ -127,6 +127,7 @@ export default function LobbyPanel() {
         }
     };
 
+    //Etkinlikler önce gelcek şekilde sıralar
     const sortedLobbies = [...lobbies].sort((a, b) => {
         if (a.type === "etkinlik" && b.type !== "etkinlik") return -1;
         if (a.type !== "etkinlik" && b.type === "etkinlik") return 1;

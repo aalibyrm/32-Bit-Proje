@@ -8,7 +8,7 @@ const themeColors = (mode) =>
         palette: {
             mode,
             primary: {
-                main: mode === "dark" ? "#9e23de" : "#8d1718",
+                main: mode === "dark" ? "#4F46E5" : "#8d1718",
             },
             secondary: {
                 main: mode === "dark" ? "#2F2F2F" : "#D9D9D9",
@@ -22,6 +22,11 @@ const themeColors = (mode) =>
                 secondary: mode === "dark" ? "#aaaaaa" : "#555555",
             },
             divider: mode === "dark" ? "#333" : "#ccc",
+        },
+
+        action: {
+            hover: mode === "dark" ? "#4F46E5" : "#8d1718",
+            selected: mode === "dark" ? "#444444" : "#e0e0e0",
         },
         typography: {
             fontFamily: '"Poppins", sans-serif',
