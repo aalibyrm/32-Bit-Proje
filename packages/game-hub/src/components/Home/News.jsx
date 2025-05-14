@@ -57,19 +57,22 @@ const News = () => {
             onMouseEnter={() => setPause(true)}
             onMouseLeave={() => setPause(false)}
         >
-            {/* Oklar */}
-            <IconButton
-                onClick={() => slider.current?.prev()}
-                sx={{ position: "absolute", top: "45%", left: 0, zIndex: 1 }}
-            >
-                <ArrowBackIos />
-            </IconButton>
-            <IconButton
-                onClick={() => slider.current?.next()}
-                sx={{ position: "absolute", top: "45%", right: 0, zIndex: 1 }}
-            >
-                <ArrowForwardIos />
-            </IconButton>
+            {pause && (
+                <>
+                    <IconButton
+                        onClick={() => slider.current?.prev()}
+                        sx={{ position: "absolute", top: "45%", left: 0, zIndex: 1 }}
+                    >
+                        <ArrowBackIos />
+                    </IconButton>
+                    <IconButton
+                        onClick={() => slider.current?.next()}
+                        sx={{ position: "absolute", top: "45%", right: 0, zIndex: 1 }}
+                    >
+                        <ArrowForwardIos />
+                    </IconButton>
+                </>)}
+
 
             {/* Slaytlar */}
             <Box ref={sliderRef} className="keen-slider">
@@ -78,7 +81,7 @@ const News = () => {
                         sx={{
                             width: "100%",
                             height: "100%",
-                            borderRadius: 2,
+                            borderRadius: 4,
                             overflow: "hidden",
                         }}>
                         <CardActionArea component="a" href={haber.link} target="_blank" rel="noopener noreferrer">

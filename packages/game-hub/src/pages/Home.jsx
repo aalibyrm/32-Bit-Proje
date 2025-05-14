@@ -1,9 +1,8 @@
 import React from 'react'
 import { Box, Grid } from '@mui/material';
-import Navbar from '../components/Home/Navbar';
-import GameList from '../components/Home/GameList';
 import TogglePanel from '../components/Home/TogglePanel';
 import Sidebar from '../components/Home/Sidebar';
+import HomePage from '../components/Home/HomePage';
 
 function Home() {
     return (
@@ -17,7 +16,7 @@ function Home() {
 
 
                 <Grid item xs={7.7} sx={{ height: '100%', overflowY: 'auto' }}>
-                    <GameList />
+                    <HomePage />
                 </Grid>
 
                 <Grid item xs={2.5} sx={{ height: '100%' }}>
