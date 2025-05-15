@@ -25,8 +25,14 @@ const News = () => {
     // Keen Slider + autoplay
     const [sliderRef, slider] = useKeenSlider({
         loop: true,
-        slides: { perView: 1, spacing: 15 },
-    });
+        mode: "free-snap", // veya "free"
+        slides: {
+            perView: 1.5,     // Ortadaki slayt + yanlarda 0.25'er slayt göstermek için
+            spacing: 15,
+            origin: "center", // Ortalamak için önemli!
+        },
+    })
+
 
     const timeout = useRef(null);
     const [pause, setPause] = useState(false);
@@ -53,10 +59,16 @@ const News = () => {
 
     return (
         <Box
-            sx={{ position: "relative", width: "60%" }}
+            sx={{
+                position: "relative",
+                width: "100%",
+                overflow: "visible",     // taşmayı göster
+                margin: "0 auto",         // ortala
+            }}
             onMouseEnter={() => setPause(true)}
             onMouseLeave={() => setPause(false)}
         >
+
             {pause && (
                 <>
                     <IconButton
@@ -77,13 +89,16 @@ const News = () => {
             {/* Slaytlar */}
             <Box ref={sliderRef} className="keen-slider">
                 {haberler.map((haber, index) => (
-                    <Card key={index} className="keen-slider__slide"
+                    <Card
+                        key={index}
+                        className="keen-slider__slide"
                         sx={{
-                            width: "100%",
-                            height: "100%",
+                            width: "90%",            // tam genişlik yerine %90 yap
+                            margin: "0 auto",        // ortala
                             borderRadius: 4,
                             overflow: "hidden",
-                        }}>
+                        }}
+                    >
                         <CardActionArea component="a" href={haber.link} target="_blank" rel="noopener noreferrer">
                             <CardMedia
                                 component="img"
