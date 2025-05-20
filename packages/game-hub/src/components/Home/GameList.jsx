@@ -14,12 +14,15 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import StarIcon from '@mui/icons-material/Star';
 import { useState } from 'react';
 import { useGames } from '../../games/GameContext';
+import { useNavigate } from 'react-router-dom'
 
 
 
 export default function GameSection() {
     const theme = useTheme();
     const { games, loading, error } = useGames();
+    const navigate = useNavigate();
+
     const gamesPerPage = 12;
     const maxPage = Math.ceil(games.length / gamesPerPage) - 1;
     const [currentPage, setCurrentPage] = useState(0);
@@ -94,8 +97,8 @@ export default function GameSection() {
             </Box>
 
             <Grid container spacing={2}>
-                {paginatedGames.map((game, idx) => (
-                    <Grid item xs={6} sm={4} md={3} lg={2} key={idx}>
+                {paginatedGames.map((game) => (
+                    <Grid item xs={6} sm={4} md={3} lg={2} key={game.id}>
                         <Box sx={{ textAlign: 'center' }}>
                             <Card
                                 sx={{
@@ -107,6 +110,7 @@ export default function GameSection() {
                                     transition: 'transform 0.3s ease',
                                     '&:hover': { transform: 'scale(1.05)' },
                                 }}
+                                onClick={() => navigate("/game-details/" + game.id)}
                             >
                                 <CardMedia
                                     component="img"

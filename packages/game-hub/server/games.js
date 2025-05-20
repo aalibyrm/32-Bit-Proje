@@ -27,7 +27,7 @@ export const getGames = async () => {
     try {
         const response = await axios.post(
             'https://api.igdb.com/v4/games',
-            `fields name,cover.url,summary;
+            `fields name,cover.url,summary,screenshots.url;
        sort rating desc;
        where rating != null & rating_count > 50;
        limit 25;`,

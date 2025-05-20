@@ -1,12 +1,16 @@
 import React from 'react'
+import { useParams } from 'react-router-dom'
 import { Box, Grid } from '@mui/material';
-import TogglePanel from '../components/Home/TogglePanel';
 import Sidebar from '../components/Home/Sidebar';
-import HomePage from '../components/Home/HomePage';
+import TogglePanel from '../components/Home/TogglePanel';
+import GameDetailsPage from '../components/GameDetails/GameDetailsPage';
 
-function Home() {
+function GameDetails() {
+    const { id } = useParams();
+
     return (
         <Box display="flex" flexDirection="column" height="100vh">
+
             <Grid container sx={{ flexGrow: 1, overflow: 'hidden' }}>
 
                 <Grid item xs={1.8} sx={{ height: '100%' }}>
@@ -15,7 +19,7 @@ function Home() {
 
 
                 <Grid item xs={7.7} sx={{ height: '100%', overflowY: 'auto' }}>
-                    <HomePage />
+                    <GameDetailsPage id={id} />
                 </Grid>
 
                 <Grid item xs={2.5} sx={{ height: '100%' }}>
@@ -26,4 +30,4 @@ function Home() {
     )
 }
 
-export default Home
+export default GameDetails

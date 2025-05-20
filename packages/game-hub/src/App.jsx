@@ -1,7 +1,7 @@
 import React from 'react'
 import Login from './pages/Login'
 import Home from './pages/Home'
-import GameDetail from './pages/GameDetail'
+import GameDetails from './pages/GameDetails'
 import { Routes, Route } from 'react-router-dom';
 import NotFoundPage from './pages/NotFoundPage';
 import { ThemeContextProvider } from './theme/ThemeContext';
@@ -36,8 +36,8 @@ function App() {
 
                             <Route element={<ProtectedRoute />}>
                                 <Route path="/home" element={<Home />} />
-                                <Route path="/game-detail" element={<GameDetail />} />
-                                <Route path="/game" element={<GameDetail />} />
+                                <Route path="/game-details/:id" element={<GameDetails />} />
+                                <Route path="/game" element={<GameDetails />} />
                                 <Route path="/logout" element={<LogoutHandler />} />
                             </Route>
 

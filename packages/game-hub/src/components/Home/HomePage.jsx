@@ -26,6 +26,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import StarIcon from '@mui/icons-material/Star';
 import News from './News';
 import GameSection from './GameList';
+import Navbar from './Navbar';
 
 const chessStats = [
     { player: 'Ahmet Y.', score: 1580 },
@@ -89,32 +90,8 @@ export default function HomePage() {
     return (
         <Box p={2} sx={{ overflowY: 'auto', height: '100%', '&::-webkit-scrollbar': { display: 'none' }, scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
 
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <ThemeToggleButton />
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Search>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase placeholder="Oyun ara..." inputProps={{ 'aria-label': 'search' }} />
-                    </Search>
-                </Box>
-                <Box display="flex" alignItems="center" gap={2}>
-                    <IconButton sx={{ color: theme.palette.text.primary }}>
-                        <NotificationsIcon />
-                    </IconButton>
-                    <IconButton onClick={handleAvatarClick} sx={{ color: theme.palette.text.primary }}>
-                        <AccountCircleIcon />
-                    </IconButton>
-                    <Menu anchorEl={anchorEl} open={open} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
-                        <Box onClick={handleLogout} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
-                            <MenuItem sx={{ '&:hover': { backgroundColor: 'transparent' } }}>Çıkış Yap</MenuItem>
-                            <LogoutIcon />
-                        </Box>
-                    </Menu>
-                </Box>
+            <Box>
+                <Navbar />
             </Box>
 
             <Box sx={{ my: 3 }}>

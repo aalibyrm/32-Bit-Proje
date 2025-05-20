@@ -1,21 +1,20 @@
 import {
     AppBar,
     Toolbar,
-    Typography,
     IconButton,
     Box,
-    Button,
     Menu,
     MenuItem,
+    InputBase,
 } from '@mui/material';
-import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ThemeToggleButton from '../ThemeToggleButton';
-import { useTheme } from '@mui/material/styles';
+import { alpha, styled, useTheme } from '@mui/material/styles';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SearchIcon from '@mui/icons-material/Search';
 
 export default function Navbar() {
     const theme = useTheme();
@@ -37,55 +36,96 @@ export default function Navbar() {
         handleClose();
     };
 
-    return (
-        <AppBar
-            position="static"
-            elevation={2}
-            sx={{
-                bgcolor: theme.palette.background.paper,
-                color: theme.palette.text.primary,
-            }}
-        >
-            <Toolbar sx={{ justifyContent: 'space-between' }}>
+    const Search = styled('div')(({ theme }) => ({
+        position: 'relative',
+        borderRadius: '16px',
+        backgroundColor: alpha(theme.palette.common.white, 0.15),
+        '&:hover': {
+            backgroundColor: alpha(theme.palette.common.white, 0.25),
+        },
+        marginLeft: 0,
+        width: '100%',
+    }));
 
-                <Box display="flex" alignItems="center" gap={2}>
-                    <SportsEsportsIcon
-                        fontSize="large"
-                        sx={{ color: theme.palette.primary.main, ml: 2 }}
-                    />
-                    <Typography variant="h6" fontWeight={700} sx={{ mr: 8 }}>
-                        GAME HUB
-                    </Typography>
-                    <Button sx={{ color: theme.palette.text.primary }}>Ana Sayfa</Button>
-                    <Button sx={{ color: theme.palette.text.primary }}>Oyunlar</Button>
+    const SearchIconWrapper = styled('div')(({ theme }) => ({
+        padding: theme.spacing(0, 2),
+        height: '100%',
+        position: 'absolute',
+        pointerEvents: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }));
+
+    const StyledInputBase = styled(InputBase)(({ theme }) => ({
+        color: theme.palette.secondary,
+        width: '100%',
+        '& .MuiInputBase-input': {
+            padding: theme.spacing(1, 1, 1, 0),
+            paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+            transition: theme.transitions.create('width'),
+        },
+    }));
+
+    return (
+        <AppBar position="static" elevation={0} sx={{
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+        }}>
+            <Toolbar sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                padding: '0 !important',
+                minHeight: '0 !important',
+                '&.MuiToolbar-root': {
+                    padding: 0,
+                    minHeight: 0,
+                },
+            }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <ThemeToggleButton />
                 </Box>
 
-                <Box display="flex" alignItems="center" gap={2}>
-                    <ThemeToggleButton />
-                    <IconButton sx={{ color: theme.palette.text.primary }}>
+                <Box sx={{ flexGrow: 1, maxWidth: 600, mx: 2 }}>
+                    <Search>
+                        <SearchIconWrapper>
+                            <SearchIcon />
+                        </SearchIconWrapper>
+                        <StyledInputBase
+                            placeholder="Oyun ara..."
+                            inputProps={{ 'aria-label': 'search' }}
+                        />
+                    </Search>
+                </Box>
+
+                <Box display="flex" alignItems="center" gap={1}>
+                    <IconButton size="large" color="inherit">
                         <NotificationsIcon />
                     </IconButton>
-
-                    <IconButton onClick={handleAvatarClick} sx={{ color: theme.palette.text.primary }}>
+                    <IconButton
+                        size="large"
+                        onClick={handleAvatarClick}
+                        color="inherit"
+                    >
                         <AccountCircleIcon />
                     </IconButton>
-
                     <Menu
                         anchorEl={anchorEl}
                         open={open}
                         onClose={handleClose}
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
                     >
-                        <Box onClick={handleLogout} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
-                            <MenuItem sx={{
-                                '&:hover': {
-                                    backgroundColor: 'transparent'
-                                }
-                            }}>Çıkış Yap</MenuItem>
-                            <LogoutIcon />
-                        </Box>
-
+                        <MenuItem onClick={handleLogout} sx={{ gap: 1 }}>
+                            <LogoutIcon fontSize="small" />
+                            Çıkış Yap
+                        </MenuItem>
                     </Menu>
                 </Box>
             </Toolbar>
