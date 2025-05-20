@@ -11,6 +11,7 @@ import { Server } from 'socket.io';
 import http from 'http';
 import { lobbyHandler } from './lobby.js';
 import { getNews } from './news.js';
+import { getGames, searchGames } from './games.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -174,6 +175,16 @@ app.get('/haberler', async (req, res) => {
         res.status(500).json({
             error: 'Haberler alınamadı',
         });
+    }
+});
+
+app.get('/games', async (req, res) => {
+    try {
+        const games = await getGames();
+        res.json(games);
+    } catch (error) {
+        console.error('IGDB Hatası:', error);
+        res.status(500).json({ error: 'Oyunlar alınamadı' });
     }
 });
 

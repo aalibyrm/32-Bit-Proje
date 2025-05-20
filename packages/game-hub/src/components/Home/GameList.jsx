@@ -13,26 +13,15 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import StarIcon from '@mui/icons-material/Star';
 import { useState } from 'react';
+import { useGames } from '../../games/GameContext';
 
-const allGames = [
-    { title: 'Tombala', img: 'https://placehold.co/80x80?text=Tombala', desc: 'Hızlı oyun, büyük ödül!' },
-    { title: 'Satranç', img: 'https://placehold.co/80x80?text=Satranç', desc: 'Zeka savaşları!' },
-    { title: 'Mangala', img: 'https://placehold.co/80x80?text=Mangala', desc: 'Strateji ve hız!' },
-    { title: 'Zuma', img: 'https://placehold.co/80x80?text=Zuma', desc: 'Strateji ve hız!' },
-    { title: 'Uno', img: 'https://placehold.co/80x80?text=Uno', desc: 'Strateji ve hız!' },
-    { title: 'Uno', img: 'https://placehold.co/80x80?text=Uno', desc: 'Strateji ve hız!' },
-    { title: 'Tombala', img: 'https://placehold.co/80x80?text=Tombala', desc: 'Hızlı oyun, büyük ödül!' },
-    { title: 'Satranç', img: 'https://placehold.co/80x80?text=Satranç', desc: 'Zeka savaşları!' },
-    { title: 'Mangala', img: 'https://placehold.co/80x80?text=Mangala', desc: 'Strateji ve hız!' },
-    { title: 'Zuma', img: 'https://placehold.co/80x80?text=Zuma', desc: 'Strateji ve hız!' },
-    { title: 'Uno', img: 'https://placehold.co/80x80?text=Uno', desc: 'Strateji ve hız!' },
-    { title: 'Uno', img: 'https://placehold.co/80x80?text=Uno', desc: 'Strateji ve hız!' }, { title: 'Uno', img: 'https://placehold.co/80x80?text=Uno', desc: 'Strateji ve hız!' }, { title: 'Uno', img: 'https://placehold.co/80x80?text=Uno', desc: 'Strateji ve hız!' },
-];
+
 
 export default function GameSection() {
     const theme = useTheme();
+    const { games, loading, error } = useGames();
     const gamesPerPage = 12;
-    const maxPage = Math.ceil(allGames.length / gamesPerPage) - 1;
+    const maxPage = Math.ceil(games.length / gamesPerPage) - 1;
     const [currentPage, setCurrentPage] = useState(0);
 
     const handleNextPage = () => {
@@ -43,10 +32,12 @@ export default function GameSection() {
         if (currentPage > 0) setCurrentPage(prev => prev - 1);
     };
 
-    const paginatedGames = allGames.slice(
+    const paginatedGames = games.slice(
         currentPage * gamesPerPage,
         (currentPage + 1) * gamesPerPage
     );
+
+    console.log(games);
 
     return (
         <Box sx={{ mb: 3 }}>
@@ -119,13 +110,13 @@ export default function GameSection() {
                             >
                                 <CardMedia
                                     component="img"
-                                    image={game.img}
+                                    image={game.cover.url}
                                     alt={game.title}
                                     sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                 />
                             </Card>
                             <Typography variant="subtitle1" fontWeight="bold" mt={1} color="text.primary">
-                                {game.title}
+                                {game.name}
                             </Typography>
                         </Box>
                     </Grid>
