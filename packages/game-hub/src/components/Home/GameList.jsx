@@ -73,6 +73,7 @@ export default function GameSection() {
                             px: 2,
                             '&:hover': { backgroundColor: '#333' },
                         }}
+                        onClick={() => navigate("/all-games")}
                     >
                         Tümünü gör
                     </Button>

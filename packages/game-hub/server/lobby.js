@@ -22,6 +22,29 @@ let lobbies = [
         startTime: null,
         endTime: null,
         maxPlayers: 4
+    }, {
+        id: "r6213c",
+        name: "Asdaaaa",
+        type: "Normal",
+        password: "1",
+        game: "Grand Theft Auto V: Special Edition",
+        leader: "kurucu2",
+        players: [22, 11, 2],
+        startTime: null,
+        endTime: null,
+        maxPlayers: 4
+    },
+    {
+        id: "r116213c",
+        name: "Mazdaaa",
+        type: "Normal",
+        password: "1",
+        game: "Grand Theft Auto V: Special Edition",
+        leader: "kurucu2",
+        players: [22, 11, 2],
+        startTime: null,
+        endTime: null,
+        maxPlayers: 4
     }
 ];
 
