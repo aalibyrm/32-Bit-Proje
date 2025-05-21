@@ -16,6 +16,7 @@ import AlertManager from './components/AlertManager';
 import './App.css';
 import { GameProvider } from './games/GameContext';
 import AllGames from './pages/AllGames';
+import FavGames from './pages/FavGames';
 
 function App() {
     return (
@@ -39,6 +40,8 @@ function App() {
                                 <Route path="/home" element={<Home />} />
                                 <Route path="/game-details/:id" element={<GameDetails />} />
                                 <Route path="/all-games" element={<AllGames />} />
+                                <Route path="/fav-games" element={<FavGames />} />
+
 
                                 <Route path="/game" element={<GameDetails />} />
                                 <Route path="/logout" element={<LogoutHandler />} />

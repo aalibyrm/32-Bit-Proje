@@ -58,6 +58,8 @@ export default function GameSection() {
                             textTransform: 'none',
                             '&:hover': { backgroundColor: '#f39c12' },
                         }}
+
+                        onClick={() => navigate("/fav-games")}
                     >
                         Favoriler
                     </Button>

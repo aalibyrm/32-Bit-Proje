@@ -1,17 +1,35 @@
 import { Box, Button, Card, Typography } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from '../Home/Navbar'
 import { lobbies } from '../../../server/lobby'
+import StarIcon from '@mui/icons-material/Star';
+
 
 const Details = ({ game }) => {
-
-    console.log("gameeeee", game)
-
-
-
     const filteredLobbies = lobbies.filter(lobby => lobby.game === game.name);
 
-    console.log("filtere", filteredLobbies)
+    const [isFav, setIsFav] = useState(false);
+
+    useEffect(() => {
+        const favs = JSON.parse(localStorage.getItem("favoriteGames")) || [];
+        setIsFav(favs.includes(game.name));
+    }, [game.name])
+
+    const addFav = () => {
+        const favs = JSON.parse(localStorage.getItem("favoriteGames")) || [];
+        if (!favs.includes(game.name)) {
+            favs.push(game.name);
+            localStorage.setItem("favoriteGames", JSON.stringify(favs));
+            setIsFav(true);
+        }
+    }
+
+    const delFav = () => {
+        let favs = JSON.parse(localStorage.getItem("favoriteGames")) || []
+        favs = favs.filter(name => name !== game.name);
+        localStorage.setItem("favoriteGames", JSON.stringify(favs));
+        setIsFav(false);
+    }
 
     return (
         <Box>
@@ -46,7 +64,26 @@ const Details = ({ game }) => {
                     </Typography>
                 </Box>
 
-                <Box sx={{ zIndex: 2 }}>
+                <Box sx={{ zIndex: 2, display: 'flex', gap: 2 }}>
+                    <Button
+                        onClick={isFav ? delFav : addFav}
+                        variant="outlined"
+                        startIcon={<StarIcon />}
+                        sx={{
+                            backgroundColor: '#E5A000',
+                            color: 'white',
+                            borderRadius: '2rem',
+                            px: 2,
+                            py: 0.8,
+                            textTransform: 'none',
+                            '&:hover': { backgroundColor: '#f39c12' },
+
+
+                        }}
+                    >
+                        {isFav ? 'Favorilerden Kaldır' : 'Favorilere Ekle'}
+                    </Button>
+
                     <Button
                         variant="contained"
                         sx={{
@@ -121,7 +158,7 @@ const Details = ({ game }) => {
 
             </Box>
 
-        </Box>
+        </Box >
     )
 }
 
