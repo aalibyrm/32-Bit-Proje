@@ -30,11 +30,6 @@ Lerna ile yönetilen monorepo yapısında React + Vite tabanlı oyun lobisi ve �
    cd 32-Bit-Proje
    ```
 
-   Eğer zaten klonladıysanız ve submodule'ları almak istiyorsanız:
-   ```bash
-   git submodule update --init --recursive
-   ```
-
 2. Lerna ile paketleri kurun:
    ```bash
    npm install
