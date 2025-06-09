@@ -38,23 +38,20 @@ Lerna ile yönetilen monorepo yapısında React + Vite tabanlı oyun lobisi ve �
 2. Lerna ile paketleri kurun:
    ```bash
    npm install
-   npm run bootstrap
    ```
 
-3. Ortam değişkenlerini ayarlayın (packages/game-hub/server/.env):
+3. Tüm paketleri paralel çalıştırın
    ```bash
-   cp packages/game-hub/server/.env.example packages/game-hub/server/.env
-   # veya direkt .env dosyasını açıp güncelleyin:
-   SESSION_SECRET=ultra-gizli-session-key
-   JWT_SECRET=mega-gizli-token-key
+   cd packages
+   npm run dev
    ```
 
-## Geliştirme Modu
-
-### Tüm paketleri paralel çalıştırma:
+4. Serverı çalıştırın
 ```bash
-npm run dev
-```
+   cd packages/game-hub/server
+   npm run dev
+   ```
+
 
 ### Sadece Game Hub çalıştırma:
 ```bash
