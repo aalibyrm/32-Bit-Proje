@@ -9,8 +9,8 @@ Lerna ile yönetilen monorepo yapısında React + Vite tabanlı oyun lobisi ve �
 ## Özellikler
 
 - **Game Hub**: Ana oyun lobisi ve yönetim sistemi
-- **Tombala**: Bağımsız tombala oyunu paketi
-- **Modüler Yapı**: Her oyun ayrı paket olarak geliştirilebilir
+- **Tombala**: Bağımsız tombala oyunu paketi (Git submodule olarak yönetilir)
+- **Modüler Yapı**: Her oyun ayrı paket/submodule olarak geliştirilebilir
 - Gerçek zamanlı lobi oluşturma ve katılma
 - Kullanıcı girişi & JWT tabanlı hızlı giriş
 - Dark/Light tema desteği (MUI)
@@ -24,10 +24,15 @@ Lerna ile yönetilen monorepo yapısında React + Vite tabanlı oyun lobisi ve �
 
 ## Kurulum
 
-1. Depoyu klonlayın:
+1. Depoyu klonlayın (submodule'lar dahil):
    ```bash
-   git clone https://github.com/aalibyrm/32-Bit-Proje.git
+   git clone --recursive https://github.com/aalibyrm/32-Bit-Proje.git
    cd 32-Bit-Proje
+   ```
+
+   Eğer zaten klonladıysanız ve submodule'ları almak istiyorsanız:
+   ```bash
+   git submodule update --init --recursive
    ```
 
 2. Lerna ile paketleri kurun:
@@ -87,7 +92,7 @@ Game-Hub/
 │   │   ├── server/           # Express + Socket.io API
 │   │   └── package.json
 │   │
-│   ├── tombala/              # Tombala oyunu paketi
+│   ├── tombala/              # Tombala oyunu paketi (submodule)
 │   │   ├── src/              # Tombala bileşenleri
 │   │   ├── package.json
 │   │   └── vite.config.js
@@ -136,3 +141,38 @@ npm run publish
    ```bash
    lerna add @gamehub/[oyun-adi] --scope=game-hub
    ```
+
+## Submodule Yönetimi
+
+Tombala oyunu ayrı bir Git repository'si olarak yönetilir ve bu projeye submodule olarak eklenir:
+
+### Submodule Güncelleme
+```bash
+# Tombala submodule'unu en son sürüme güncelle
+git submodule update --remote packages/tombala
+
+# Değişiklikleri commit et
+git add packages/tombala
+git commit -m "Update tombala submodule"
+```
+
+### Yeni Submodule Ekleme
+```bash
+# Yeni oyun submodule'u ekle
+git submodule add https://github.com/aalibyrm/[oyun-repo].git packages/[oyun-adi]
+```
+
+### Submodule İçinde Çalışma
+```bash
+# Submodule dizinine gir
+cd packages/tombala
+
+# Normal git işlemleri yap
+git checkout main
+git pull origin main
+
+# Ana projeye geri dön ve güncelle
+cd ../..
+git add packages/tombala
+git commit -m "Update tombala to latest version"
+```
