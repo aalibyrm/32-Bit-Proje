@@ -47,6 +47,10 @@ Lerna ile yönetilen monorepo yapısında React + Vite tabanlı oyun lobisi ve �
    npm run dev
    ```
 
+### Giriş yapmak için users.js dosyasına bakın:
+```bash
+packages/game-hub/server/users.js
+```
 
 ### Sadece Game Hub çalıştırma:
 ```bash
