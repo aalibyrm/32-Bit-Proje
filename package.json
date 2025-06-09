@@ -17,5 +17,16 @@
   },
   "devDependencies": {
     "lerna": "^8.1.9"
+  },
+  "scripts": {
+    "install-all": "npm install",
+    "clean": "lerna clean",
+    "build": "lerna run build",
+    "start": "lerna run start --parallel",
+    "dev": "lerna run dev --parallel",
+    "dev:game-hub": "lerna run dev --scope=game-hub",
+    "dev:tombala": "lerna run dev --scope=@gamehub/tombala",
+    "test": "lerna run test",
+    "publish": "lerna publish"
   }
 }

@@ -48,7 +48,7 @@ const Countdown = ({ date }) => {
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <EventIcon sx={{ mr: 1 }} />
 
-            <Typography variant="body2" color="text.secondary" >
+            <Typography variant="body2" >
                 {hoursDifference}
             </Typography>
         </Box >

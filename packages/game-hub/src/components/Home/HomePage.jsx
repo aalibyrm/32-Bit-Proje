@@ -88,7 +88,20 @@ export default function HomePage() {
     }));
 
     return (
-        <Box p={2} sx={{ overflowY: 'auto', height: '100%', '&::-webkit-scrollbar': { display: 'none' }, scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <Box
+            p={2}
+            className="gradient-bg"
+            sx={{
+                overflowY: 'auto',
+                height: '100%',
+                '&::-webkit-scrollbar': { display: 'none' },
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+                background: theme.palette.background.default,
+                backgroundAttachment: 'fixed',
+                minHeight: '100vh'
+            }}
+        >
 
             <Box>
                 <Navbar />
@@ -109,7 +122,23 @@ export default function HomePage() {
                 <Grid container spacing={2}>
                     {chessStats.map((stat, i) => (
                         <Grid item xs={12} sm={6} key={i}>
-                            <Card sx={{ bgcolor: theme.palette.background.paper, color: theme.palette.text.primary, borderRadius: 2, px: 2, py: 1 }}>
+                            <Card
+                                className="card-gradient"
+                                sx={{
+                                    background: theme.palette.background.paper,
+                                    color: theme.palette.text.primary,
+                                    borderRadius: 2,
+                                    px: 2,
+                                    py: 1,
+                                    boxShadow: `0 8px 32px ${theme.palette.mode === 'dark' ? 'rgba(158, 35, 222, 0.1)' : 'rgba(141, 23, 24, 0.1)'}`,
+                                    border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(158, 35, 222, 0.2)' : 'rgba(141, 23, 24, 0.2)'}`,
+                                    transition: 'all 0.3s ease',
+                                    '&:hover': {
+                                        transform: 'translateY(-2px)',
+                                        boxShadow: `0 12px 40px ${theme.palette.mode === 'dark' ? 'rgba(158, 35, 222, 0.2)' : 'rgba(141, 23, 24, 0.2)'}`,
+                                    }
+                                }}
+                            >
                                 <Typography variant="subtitle1" fontWeight="bold">
                                     {stat.player}
                                 </Typography>

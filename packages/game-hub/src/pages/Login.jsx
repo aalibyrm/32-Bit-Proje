@@ -48,7 +48,8 @@ function Login() {
             alignItems: 'center',
             justifyContent: 'center',
             py: 4,
-            position: 'relative'
+            position: 'relative',
+            backgroundColor: mode === 'dark' ? '#121212' : '#ffffff'
         }}>
 
             <Box sx={{
@@ -115,7 +116,8 @@ function Login() {
                         sx={{
                             display: 'flex',
                             flexDirection: 'column',
-                            justifyContent: 'center'
+                            justifyContent: 'center',
+                            backgroundColor: mode === 'dark' ? '#2F2F2F' : '#ffffff'
                         }}
                     >
                         <Box
@@ -128,7 +130,10 @@ function Login() {
                                 justifyContent: 'center'
                             }}
                         >
-                            <Typography component="h1" variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
+                            <Typography component="h1" variant="h4" gutterBottom sx={{
+                                fontWeight: 600,
+                                color: mode === 'dark' ? '#ffffff' : '#000000'
+                            }}>
                                 Giriş
                             </Typography>
 
@@ -155,10 +160,14 @@ function Login() {
                                         >
                                             <Avatar sx={{ width: 48, height: 48 }} src="/broken-image.jpg" />
                                             <Box>
-                                                <Typography variant="body2" >
+                                                <Typography variant="body2" sx={{
+                                                    color: mode === 'dark' ? '#ffffff' : '#000000'
+                                                }}>
                                                     {rememberUser}
                                                 </Typography>
-                                                <Typography variant="caption">
+                                                <Typography variant="caption" sx={{
+                                                    color: mode === 'dark' ? '#b0b0b0' : '#666666'
+                                                }}>
                                                     Bu hesapla devam edin
                                                 </Typography>
                                             </Box>
@@ -173,13 +182,19 @@ function Login() {
                                             }}
                                         >
                                             <Divider sx={{ backgroundColor: 'red', flex: 1, }} />
-                                            <Typography sx={{ px: 1, fontSize: '0.8rem' }}>veya</Typography>
+                                            <Typography sx={{
+                                                px: 1,
+                                                fontSize: '0.8rem',
+                                                color: mode === 'dark' ? '#b0b0b0' : '#666666'
+                                            }}>veya</Typography>
                                             <Divider sx={{ flex: 1 }} />
                                         </Box>
 
                                     </Box>
                                     :
-                                    <Typography variant="body2" gutterBottom>
+                                    <Typography variant="body2" gutterBottom sx={{
+                                        color: mode === 'dark' ? '#ffffff' : '#000000'
+                                    }}>
                                         Hoş geldiniz!
                                     </Typography>
                             }
@@ -199,6 +214,22 @@ function Login() {
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             required
+                                            sx={{
+                                                '& .MuiInputLabel-root': {
+                                                    color: mode === 'dark' ? '#b0b0b0' : '#666666'
+                                                },
+                                                '& .MuiOutlinedInput-input': {
+                                                    color: mode === 'dark' ? '#ffffff' : '#000000'
+                                                },
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: mode === 'dark' ? '#555555' : '#cccccc'
+                                                    },
+                                                    '&:hover fieldset': {
+                                                        borderColor: mode === 'dark' ? '#777777' : '#999999'
+                                                    }
+                                                }
+                                            }}
                                         />
                                         <TextField
                                             fullWidth
@@ -209,6 +240,22 @@ function Login() {
                                             value={password}
                                             onChange={(e) => { setPassword(e.target.value) }}
                                             required
+                                            sx={{
+                                                '& .MuiInputLabel-root': {
+                                                    color: mode === 'dark' ? '#b0b0b0' : '#666666'
+                                                },
+                                                '& .MuiOutlinedInput-input': {
+                                                    color: mode === 'dark' ? '#ffffff' : '#000000'
+                                                },
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: mode === 'dark' ? '#555555' : '#cccccc'
+                                                    },
+                                                    '&:hover fieldset': {
+                                                        borderColor: mode === 'dark' ? '#777777' : '#999999'
+                                                    }
+                                                }
+                                            }}
                                         />
 
                                         <Box sx={{
@@ -220,11 +267,25 @@ function Login() {
                                             <FormControlLabel
                                                 control={<Checkbox checked={rememberMe}
                                                     onChange={(e) => { setRememberMe(e.target.checked) }}
+                                                    sx={{
+                                                        color: mode === 'dark' ? '#b0b0b0' : '#666666',
+                                                        '&.Mui-checked': {
+                                                            color: mode === 'dark' ? '#90caf9' : '#1976d2'
+                                                        }
+                                                    }}
                                                 />}
                                                 label="Beni hatırla"
+                                                sx={{
+                                                    '& .MuiFormControlLabel-label': {
+                                                        color: mode === 'dark' ? '#ffffff' : '#000000'
+                                                    }
+                                                }}
                                             />
                                             <Link underline="hover" variant="body2" onClick={() => setForgotPassword(false)}
-                                                sx={{ cursor: 'pointer' }}>
+                                                sx={{
+                                                    cursor: 'pointer',
+
+                                                }}>
                                                 Şifremi Unuttum
                                             </Link>
                                         </Box>
@@ -247,6 +308,22 @@ function Login() {
                                             autoFocus
                                             size="small"
                                             required
+                                            sx={{
+                                                '& .MuiInputLabel-root': {
+                                                    color: mode === 'dark' ? '#b0b0b0' : '#666666'
+                                                },
+                                                '& .MuiOutlinedInput-input': {
+                                                    color: mode === 'dark' ? '#ffffff' : '#000000'
+                                                },
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: mode === 'dark' ? '#555555' : '#cccccc'
+                                                    },
+                                                    '&:hover fieldset': {
+                                                        borderColor: mode === 'dark' ? '#777777' : '#999999'
+                                                    }
+                                                }
+                                            }}
                                         />
                                         <Box sx={{
                                             mt: 2,
@@ -256,7 +333,8 @@ function Login() {
                                         }}>
 
                                             <Link onClick={() => setForgotPassword(true)} underline="hover" variant="body2" sx={{
-                                                cursor: 'pointer'
+                                                cursor: 'pointer',
+                                                color: mode === 'dark' ? '#90caf9' : '#1976d2'
                                             }}>
                                                 Giriş Yap
                                             </Link>

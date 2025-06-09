@@ -17,6 +17,7 @@ import './App.css';
 import { GameProvider } from './games/GameContext';
 import AllGames from './pages/AllGames';
 import FavGames from './pages/FavGames';
+import { TombalaGame } from '@gamehub/tombala';
 
 function App() {
     return (
@@ -45,6 +46,8 @@ function App() {
 
                                 <Route path="/game" element={<GameDetails />} />
                                 <Route path="/logout" element={<LogoutHandler />} />
+
+                                <Route path='/tombala/:lobbyId' element={<TombalaGame />} />
                             </Route>
 
                             <Route path="*" element={<NotFoundPage />} />

@@ -4,7 +4,7 @@ import React from 'react'
 function PlayerList({ players, leader }) {
 
     const theme = useTheme();
-    const mode = theme.palette.mode === 'light';
+    const isDark = theme.palette.mode === 'dark';
 
     return (
         <Box sx={{
@@ -19,7 +19,7 @@ function PlayerList({ players, leader }) {
                 borderRadius: '3px',
             },
         }}>
-            <Typography variant="subtitle1" sx={{ mb: 1 }}>Lobideki Oyuncular</Typography>
+            <Typography variant="subtitle1" sx={{ mb: 1, color: 'text.primary' }}>Lobideki Oyuncular</Typography>
             {players.map((player, index) => {
                 const isLeader = player === leader;
 
@@ -27,14 +27,16 @@ function PlayerList({ players, leader }) {
                     <Box key={index} sx={{
                         display: 'flex',
                         alignItems: 'center',
-                        p: 1,
+                        p: 1.5,
                         mb: 1,
                         borderRadius: 2,
-                        bgcolor: 'background.default'
+                        bgcolor: (theme) => theme.palette.mode === 'dark' ? '#2A2A2A' : '#F5F5F5',
+                        border: `1px solid ${theme.palette.divider}`,
+                        transition: 'all 0.2s ease'
                     }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                             <Box>
-                                <Typography >{player}</Typography>
+                                <Typography sx={{ color: 'text.primary', fontWeight: 600 }}>{player}</Typography>
                                 <Typography variant="body2" color="text.secondary">
                                     {isLeader ? 'Lobi Lideri' : 'Üye'}
                                 </Typography>
@@ -42,10 +44,12 @@ function PlayerList({ players, leader }) {
 
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <Chip label="Aktif" sx={{
-                                    color: mode ? '#059669' : '#D1FAE5',
-                                    backgroundColor: mode ? '#D1FAE5' : '#059669',
+                                    color: isDark ? '#D1FAE5' : '#059669',
+                                    backgroundColor: isDark ? '#059669' : '#D1FAE5',
+                                    fontWeight: 600,
+                                    border: isDark ? '1px solid #059669' : '1px solid #D1FAE5'
                                 }}
-                                    variant="contained" />
+                                    variant="filled" />
                             </Box>
                         </Box>
                     </Box>

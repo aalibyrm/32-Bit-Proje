@@ -4,7 +4,7 @@ export const AlertContext = createContext();
 export const AlertProvider = ({ children }) => {
     const [alert, setAlert] = useState({ open: false, message: '', severity: 'info' });
 
-    const showAlert = useCallback((message, severity = 'info', duration = 1000) => {
+    const showAlert = useCallback((message, severity = 'info', duration = 2000) => {
 
         setAlert({ open: true, message, severity });
 

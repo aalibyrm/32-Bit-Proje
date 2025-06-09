@@ -2,6 +2,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { Box, Button, Typography, Modal, TextField } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import socket from '../../socket/socket';
@@ -15,6 +16,7 @@ import LobbyList from './Lobby/LobbyList';
 
 export default function LobbyPanel() {
     const theme = useTheme();
+    const navigate = useNavigate();
     const { showAlert } = useContext(AlertContext);
 
     const [lobbies, setLobbies] = useState([]);
@@ -57,14 +59,24 @@ export default function LobbyPanel() {
             setLobbies(data);
         });
 
-        socket.on('join-success', () => {
+        socket.on('join-success', (lobby) => {
             showAlert('Lobiye katıldınız', 'success');
             setJoinPassword('');
             setSelectedLobbyId(null);
             setError('');
+
+            // Eğer oyun Tombala ise, bekleme ekranına yönlendir
+            if (lobby.game === 'Tombala') {
+                navigate(`/tombala/${lobby.id}`);
+            }
         });
 
         socket.on('join-error', (msg) => setError(msg));
+
+        // Lobi silindiği bildirimini dinle
+        socket.on('lobby-deleted', ({ lobbyId, lobbyName }) => {
+            showAlert(`Lobi "${lobbyName}" silindi!`, 'warning');
+        });
 
         return () => {
             socket.off('connect', handleConnect);
@@ -72,8 +84,9 @@ export default function LobbyPanel() {
             socket.off('lobbies');
             socket.off('join-success');
             socket.off('join-error');
+            socket.off('lobby-deleted');
         };
-    }, [showAlert]);
+    }, [showAlert, navigate]);
 
     const handleOpen = () => setModalOpen(true);
     const handleClose = () => setModalOpen(false);
@@ -136,62 +149,155 @@ export default function LobbyPanel() {
 
     const isInLobby = lobbies.some(lobby => lobby.players.includes(userId));
     const isLeader = lobbies.some(lobby => lobby.leader === userId);
+    const hasStartedGames = lobbies.some(lobby => lobby.gameStarted === true);
 
     return (
-        <Box p={2} sx={{
-            overflowY: 'auto',
-            height: '100%',
-            bgcolor: theme.palette.background.default,
-            color: theme.palette.text.primary,
-            '&::-webkit-scrollbar': { display: 'none' },
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
-        }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                {!isLeader && !isInLobby && <Button variant="contained" color="primary" onClick={handleOpen}>Lobi Oluştur</Button>}
-                {!isInLobby && <Button variant="contained" color="primary" onClick={handleOpenJoinModal}>Lobiye Katıl</Button>}
+        <Box
+            p={2}
+            className="gradient-bg"
+            sx={{
+                overflowY: 'auto',
+                height: '100%',
+                background: theme.palette.background.default,
+                color: theme.palette.text.primary,
+                '&::-webkit-scrollbar': { display: 'none' },
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+                backgroundAttachment: 'fixed',
+                position: 'relative',
+                '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: theme.palette.mode === 'dark'
+                        ? 'radial-gradient(circle at 20% 20%, rgba(158, 35, 222, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 107, 107, 0.1) 0%, transparent 50%)'
+                        : 'radial-gradient(circle at 20% 20%, rgba(141, 23, 24, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(141, 23, 24, 0.1) 0%, transparent 50%)',
+                    pointerEvents: 'none',
+                    zIndex: 0,
+                },
+            }}
+        >
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    gap: 2,
+                    mb: 3,
+                    position: 'relative',
+                    zIndex: 1,
+                }}
+            >
+                {!isLeader && !isInLobby && (
+                    <Button
+                        variant="contained"
+                        onClick={handleOpen}
+                        sx={{
+                            background: theme.palette.mode === 'dark'
+                                ? 'linear-gradient(135deg, #9E23DE 0%, #FF6B6B 100%)'
+                                : 'linear-gradient(135deg, #8d1718 0%, #8d1718 100%)',
+                            color: '#ffffff',
+                            fontWeight: 'bold',
+                            py: 1.5,
+                            px: 3,
+                            borderRadius: 3,
+                            border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(158, 35, 222, 0.3)' : 'rgba(141, 23, 24, 0.3)'}`,
+                            boxShadow: theme.palette.mode === 'dark'
+                                ? '0 8px 32px rgba(158, 35, 222, 0.3)'
+                                : '0 8px 32px rgba(141, 23, 24, 0.3)',
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                                background: theme.palette.mode === 'dark'
+                                    ? 'linear-gradient(135deg, #B947F1 0%, #FF8E8E 100%)'
+                                    : 'linear-gradient(135deg, #B91A1C 0%, #B91A1C 100%)',
+                                transform: 'translateY(-2px)',
+                                boxShadow: theme.palette.mode === 'dark'
+                                    ? '0 12px 40px rgba(158, 35, 222, 0.4)'
+                                    : '0 12px 40px rgba(141, 23, 24, 0.4)',
+                            },
+                        }}
+                    >
+                        Lobi Oluştur
+                    </Button>
+                )}
+                {!isInLobby && (
+                    <Button
+                        variant="contained"
+                        onClick={handleOpenJoinModal}
+                        sx={{
+                            background: theme.palette.mode === 'dark'
+                                ? 'linear-gradient(135deg, #4ECDC4 0%, #9E23DE 100%)'
+                                : 'linear-gradient(135deg, #8d1718 0%, #8d1718 100%)',
+                            color: '#ffffff',
+                            fontWeight: 'bold',
+                            py: 1.5,
+                            px: 3,
+                            borderRadius: 3,
+                            border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(78, 205, 196, 0.3)' : 'rgba(141, 23, 24, 0.3)'}`,
+                            boxShadow: theme.palette.mode === 'dark'
+                                ? '0 8px 32px rgba(78, 205, 196, 0.3)'
+                                : '0 8px 32px rgba(141, 23, 24, 0.3)',
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                                background: theme.palette.mode === 'dark'
+                                    ? 'linear-gradient(135deg, #5FD4CE 0%, #B947F1 100%)'
+                                    : 'linear-gradient(135deg, #B91A1C 0%, #B91A1C 100%)',
+                                transform: 'translateY(-2px)',
+                                boxShadow: theme.palette.mode === 'dark'
+                                    ? '0 12px 40px rgba(78, 205, 196, 0.4)'
+                                    : '0 12px 40px rgba(141, 23, 24, 0.4)',
+                            },
+                        }}
+                    >
+                        Lobiye Katıl
+                    </Button>
+                )}
             </Box>
 
-            <CreateLobbyModal
-                open={modalOpen}
-                handleClose={handleClose}
-                newLobby={newLobby}
-                setNewLobby={setNewLobby}
-                createLobby={createLobby}
-            />
+            <Box sx={{ position: 'relative', zIndex: 1 }}>
+                <CreateLobbyModal
+                    open={modalOpen}
+                    handleClose={handleClose}
+                    newLobby={newLobby}
+                    setNewLobby={setNewLobby}
+                    createLobby={createLobby}
+                />
 
-            <JoinLobbyModal
-                open={joinModalOpen}
-                handleClose={handleCloseJoinModal}
-                inputId={inputId}
-                setInputId={setInputId}
-                checkLobbyId={checkLobbyId}
-            />
+                <JoinLobbyModal
+                    open={joinModalOpen}
+                    handleClose={handleCloseJoinModal}
+                    inputId={inputId}
+                    setInputId={setInputId}
+                    checkLobbyId={checkLobbyId}
+                />
 
-            <LobbyDetailsModal
-                open={lobbyModalOpen}
-                handleClose={handleCloseLobbyModal}
-                selectedLobby={selectedLobby}
-                showAlert={showAlert}
-            />
+                <LobbyDetailsModal
+                    open={lobbyModalOpen}
+                    handleClose={handleCloseLobbyModal}
+                    selectedLobby={selectedLobby}
+                    showAlert={showAlert}
+                />
 
-            <PasswordModal
-                open={!isInLobby && selectedLobbyId}
-                handleClose={() => setSelectedLobbyId(null)}
-                joinPassword={joinPassword}
-                setJoinPassword={setJoinPassword}
-                submitJoin={submitJoin}
-                error={error}
-            />
+                <PasswordModal
+                    open={!isInLobby && selectedLobbyId}
+                    handleClose={() => setSelectedLobbyId(null)}
+                    joinPassword={joinPassword}
+                    setJoinPassword={setJoinPassword}
+                    submitJoin={submitJoin}
+                    error={error}
+                />
 
-            <LobbyList
-                lobbies={sortedLobbies}
-                userId={userId}
-                handleLobbyClick={handleLobbyClick}
-                leaveLobby={leaveLobby}
-                requestJoin={requestJoin}
-                deleteLobby={deleteLobby}
-            />
+                <LobbyList
+                    lobbies={sortedLobbies}
+                    userId={userId}
+                    handleLobbyClick={handleLobbyClick}
+                    leaveLobby={leaveLobby}
+                    requestJoin={requestJoin}
+                    deleteLobby={deleteLobby}
+                />
+            </Box>
         </Box>
     );
 }
